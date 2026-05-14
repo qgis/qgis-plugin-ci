@@ -99,8 +99,6 @@ addopts = """
     --ignore=test/_wip/
 """
 junit_family = "xunit2"
-log_cli = true
-log_cli_level = "DEBUG"
 minversion = "5.0"
 norecursedirs = ".* build dev development dist docs CVS fixtures _darcs {arch} *.egg venv _wip"
 python_files = "test_*.py"
