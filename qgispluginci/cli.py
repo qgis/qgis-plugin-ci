@@ -4,14 +4,11 @@ import logging
 from html import parser
 from importlib.metadata import version
 
+from qgispluginci import __package_name__, __version__
 from qgispluginci.changelog import ChangelogParser
 from qgispluginci.parameters import Parameters
 from qgispluginci.release import release
 from qgispluginci.translation import Translation
-
-
-__version__ = version("qgis-plugin-ci")
-__title__ = "QGISPluginCI"
 
 
 def make_parser() -> argparse.ArgumentParser:
@@ -203,7 +200,7 @@ def cli():
     console.setLevel(args.verbosity)
 
     # add the handler to the root logger
-    logger = logging.getLogger(__title__)
+    logger = logging.getLogger(__package_name__)
     logger.debug(f"Log level set: {logging}")
 
     # if no command is passed, print the help and exit
