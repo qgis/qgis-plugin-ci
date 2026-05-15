@@ -146,8 +146,8 @@ class TestRelease(unittest.TestCase):
         )
         replace_in_file(
             xml_repo,
-            "__GENERATOR_VERSION__",
-            "__REPLACED_VERSION__",
+            r'generator_version="[^"]+"',
+            'generator_version="__REPLACED_VERSION__"',
         )
 
         if not filecmp.cmp("test/plugins.xml.expected", xml_repo, shallow=False):
