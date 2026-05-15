@@ -157,10 +157,17 @@ split-on-trailing-comma = true
 "test/test_*.py" = ["ANN001", "ANN2", "S101", "T20"] # Ignore rules in tests
 
 [tool.setuptools]
-packages = ["qgispluginci", "qgispluginci.translation_clients"]
+packages = [
+    "qgispluginci",
+    "qgispluginci.repository",
+    "qgispluginci.translation_clients",
+]
 
 [tool.setuptools-git-versioning]
 enabled = true
 
 [tool.setuptools.dynamic]
 readme = {file = ["README.md"], content-type = "text/markdown"}
+
+[tool.setuptools.package-data]
+"qgispluginci.repository" = ["plugins.xml.template", "plugins.xsl"]

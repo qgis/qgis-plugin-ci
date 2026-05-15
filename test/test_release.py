@@ -9,7 +9,7 @@ import unittest
 import urllib.request
 from itertools import product
 from pathlib import Path
-from tempfile import mkstemp
+from tempfile import TemporaryDirectory, mkstemp
 from zipfile import ZipFile
 
 # 3rd party
@@ -20,7 +20,7 @@ from github import Github, GithubException
 from qgispluginci.changelog import ChangelogParser
 from qgispluginci.exceptions import GithubReleaseNotFound
 from qgispluginci.parameters import DASH_WARNING, Parameters
-from qgispluginci.release import release
+from qgispluginci.release import create_plugin_repo, release
 from qgispluginci.translation import Translation
 from qgispluginci.utils import replace_in_file
 
@@ -30,6 +30,7 @@ from test.utils import can_skip_test_github, can_skip_test_transifex
 
 # If changed, also update CHANGELOG.md
 RELEASE_VERSION_TEST = "0.1.2"
+STYLESHEET_DECLARATION_LINE = '<?xml-stylesheet type="text/xsl" href="plugins.xsl"?>'
 
 
 class TestRelease(unittest.TestCase):
@@ -277,6 +278,72 @@ class TestRelease(unittest.TestCase):
         sub_parser.add_argument("--no-validation", action="store_true")
         args = parser.parse_args(["package", "v1", "--no-validation"])
         Parameters.validate_args(args)
+
+    def test_create_plugin_repo_with_stylesheet(self):
+        """Stylesheet line must be present in the XML and the XSL file must be copied alongside."""
+        archive_name = self.qgis_plugin_config_params.archive_name(
+            self.qgis_plugin_config_params.plugin_path, RELEASE_VERSION_TEST
+        )
+        original_dir = Path().cwd()
+        with TemporaryDirectory() as tmp_dir:
+            try:
+                os.chdir(tmp_dir)
+                returned_path = create_plugin_repo(
+                    parameters=self.qgis_plugin_config_params,
+                    release_version=RELEASE_VERSION_TEST,
+                    release_tag=RELEASE_VERSION_TEST,
+                    archive=archive_name,
+                    osgeo_username="",
+                    plugin_repo_url="https://oslandia.gitlab.io/qgis/oslandia/",
+                    plugin_repo_stylesheet=True,
+                )
+                content = Path(returned_path).read_text(encoding="utf-8")
+                self.assertIn(
+                    STYLESHEET_DECLARATION_LINE,
+                    content,
+                    "Stylesheet process instruction line must be present in XML",
+                )
+
+                xsl_sibling = Path(returned_path).parent / "plugins.xsl"
+                self.assertTrue(
+                    xsl_sibling.is_file(),
+                    f"plugins.xsl must be copied alongside plugins.xml (looked in {xsl_sibling})",
+                )
+            finally:
+                os.chdir(original_dir)
+
+    def test_create_plugin_repo_disable_stylesheet(self):
+        """No stylesheet line in the XML and no XSL file copied when disable_stylesheet=True."""
+        archive_name = self.qgis_plugin_config_params.archive_name(
+            self.qgis_plugin_config_params.plugin_path, RELEASE_VERSION_TEST
+        )
+        original_dir = Path().cwd()
+        with TemporaryDirectory() as tmp_dir:
+            try:
+                os.chdir(tmp_dir)
+                returned_path = create_plugin_repo(
+                    parameters=self.qgis_plugin_config_params,
+                    release_version=RELEASE_VERSION_TEST,
+                    release_tag=RELEASE_VERSION_TEST,
+                    archive=archive_name,
+                    osgeo_username="",
+                    plugin_repo_url="https://example.com/",
+                    plugin_repo_stylesheet=False,
+                )
+                content = Path(returned_path).read_text(encoding="utf-8")
+                self.assertNotIn(
+                    STYLESHEET_DECLARATION_LINE,
+                    content,
+                    "Stylesheet process instruction line must be absent when disable_stylesheet=True",
+                )
+
+                xsl_sibling = Path(returned_path).parent / "plugins.xsl"
+                self.assertFalse(
+                    xsl_sibling.is_file(),
+                    "plugins.xsl must not be copied when disable_stylesheet=True",
+                )
+            finally:
+                os.chdir(original_dir)
 
 
 if __name__ == "__main__":
