@@ -1,4 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
+<?xml-stylesheet type="text/xsl" href="plugins.xsl"?>
 <plugins>
     <pyqgis_plugin name="QGIS Plugin CI Testing" version="0.1.2" plugin_id="plugins.qgis.org:99999">
         <about><![CDATA[Downloading would be useless]]></about>

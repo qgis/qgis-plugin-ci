@@ -78,6 +78,11 @@ def cli():
         action="append",
         help="An additional asset path to add. Can be specified multiple times.",
     )
+    package_parser.add_argument(
+        "--no-repository-stylesheet",
+        action="store_true",
+        help="Do not embed the XSL stylesheet reference in the generated plugins.xml.",
+    )
 
     # changelog
     changelog_parser = subparsers.add_parser(
@@ -114,6 +119,11 @@ def cli():
         "--create-plugin-repo",
         action="store_true",
         help="Will create a XML repo as a Github release asset. Github token is required.",
+    )
+    release_parser.add_argument(
+        "--no-repository-stylesheet",
+        action="store_true",
+        help="Do not embed the XSL stylesheet reference in the generated plugins.xml.",
     )
     release_parser.add_argument(
         "-c",
@@ -221,6 +231,7 @@ def cli():
             tx_api_token=args.transifex_token,
             allow_uncommitted_changes=args.allow_uncommitted_changes,
             plugin_repo_url=args.plugin_repo_url,
+            plugin_repo_stylesheet=not args.no_repository_stylesheet,
             disable_submodule_update=args.disable_submodule_update,
             asset_paths=args.asset_path,
         )
@@ -234,6 +245,7 @@ def cli():
             tx_api_token=args.transifex_token,
             github_token=args.github_token,
             upload_plugin_repo_github=args.create_plugin_repo,
+            plugin_repo_stylesheet=not args.no_repository_stylesheet,
             alternative_repo_url=args.alternative_repo_url,
             qgis_token=args.qgis_token,
             osgeo_username=args.osgeo_username,

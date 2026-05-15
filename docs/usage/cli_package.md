@@ -28,6 +28,8 @@ optional arguments:
                         If omitted, a git submodule is updated. If specified, git submodules will not be updated/initialized before packaging.
   -a ASSET_PATH, --asset-path ASSET_PATH
                         An additional asset path to add. Can be specified multiple times.
+  --no-repository-stylesheet
+                        Do not embed the XSL stylesheet reference in the generated plugins.xml.
 ```
 
 ## Additional metadata
@@ -49,3 +51,6 @@ dateTime=
 ```
 
 :::
+
+```{include} ../partials/_custom_repository.md
+```

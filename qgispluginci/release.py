@@ -44,12 +44,13 @@ from qgispluginci.utils import (
 if TYPE_CHECKING:
     from github.Repository import Repository
 
-# GLOBALS
+# -- GLOBALS--
 logger = logging.getLogger(__name__)
 
-QGIS_PLUGINS_REPO_URL = "https://plugins.qgis.org"
+QGIS_PLUGINS_REPO_URL: str = "https://plugins.qgis.org"
 
 
+# -- FUNCTIONS --
 def create_archive(
     parameters: Parameters,
     release_version: str,
@@ -400,13 +401,27 @@ def create_plugin_repo(
     release_version: str,
     release_tag: str,
     archive: str,
-    osgeo_username: str,
+    osgeo_username: str | None = None,
     is_prerelease: bool = False,
     plugin_repo_url: str | None = None,
+    plugin_repo_stylesheet: bool = True,
 ) -> str:
+    """Creates the plugin repository as an XML file.
+
+    Args:
+        parameters (Parameters): options passed to qgis-plugin-ci
+        release_version (str): version to be released
+        release_tag (str): git tag to be released
+        archive (str): archive file path to upload
+        osgeo_username (str): OSGeo username to use to publish the plugin
+        is_prerelease (bool, optional): pre-release or not. Defaults to False.
+        plugin_repo_url (str | None, optional): URL of the endpoint to publish the plugin . Defaults to None.
+        plugin_repo_stylesheet (bool, optional): add XSL stylesheet to plugins.xml. Defaults to True.
+
+    Returns:
+        str: repository XML
     """
-    Creates the plugin repo as an XML file
-    """
+    # consolidate template replacement values
     replace_dict = {
         "__ABOUT__": parameters.about,
         "__AUTHOR__": parameters.author,
@@ -441,8 +456,15 @@ def create_plugin_repo(
         ),
         "__QGIS_MIN_VERSION__": parameters.qgis_minimum_version,
         "__SERVER__": str(parameters.supports_server),
+        "__STYLESHEET_PI__": (
+            '<?xml-stylesheet type="text/xsl" href="plugins.xsl"?>'
+            if plugin_repo_stylesheet
+            else ""
+        ),
         "__TAGS__": parameters.tags,
     }
+
+    # if remote plugin repository URL is not set, create a local XML file
     if not plugin_repo_url:
         orgs = replace_dict["__ORG__"]
         repo = replace_dict["__REPO__"]
@@ -455,11 +477,34 @@ def create_plugin_repo(
     else:
         download_url = f"{plugin_repo_url}{replace_dict['__PLUGINZIP__']}"
         xml_repo = "./plugins.xml"
+
     replace_dict["__DOWNLOAD_URL__"] = download_url
+
+    # load template and fill it
     with importlib_resources.path(
-        "qgispluginci", "plugins.xml.template"
+        "qgispluginci.repository", "plugins.xml.template"
     ) as xml_template:
         configure_file(xml_template, xml_repo, replace_dict)
+
+    # include XSL stylesheet. See: https://github.com/opengisch/qgis-plugin-ci/issues/375
+    if plugin_repo_stylesheet:
+        logger.debug(
+            "Including shipped XSL stylesheet into the custom plugins repository."
+        )
+        try:
+            with importlib_resources.path(
+                "qgispluginci.repository", "plugins.xsl"
+            ) as xsl_src:
+                xsl_dest = Path(xml_repo).parent / "plugins.xsl"
+                if xsl_src != xsl_dest:
+                    shutil.copy(xsl_src, xsl_dest)
+                logger.debug(f"XSL stylesheet copied to: {xsl_dest}")
+        except Exception as exc:
+            logger.warning(
+                f"Could not copy plugins.xsl alongside plugins.xml: {exc}",
+                exc_info=exc,
+            )
+
     return xml_repo
 
 
@@ -574,16 +619,17 @@ def upload_plugin_to_osgeo_xml_rpc(
 def release(
     parameters: Parameters,
     release_version: str,
-    release_tag: str = None,
-    github_token: str = None,
+    release_tag: str | None = None,
+    github_token: str | None = None,
     upload_plugin_repo_github: bool = False,
-    tx_api_token: str = None,
-    alternative_repo_url: str = None,
-    qgis_token: str = None,
-    osgeo_username: str = None,
-    osgeo_password: str = None,
+    tx_api_token: str | None = None,
+    alternative_repo_url: str | None = None,
+    qgis_token: str | None = None,
+    osgeo_username: str | None = None,
+    osgeo_password: str | None = None,
     allow_uncommitted_changes: bool = False,
-    plugin_repo_url: str = None,
+    plugin_repo_url: str | None = None,
+    plugin_repo_stylesheet: bool = True,
     disable_submodule_update: bool = False,
     asset_paths: tuple[str] = (),
 ):
@@ -621,8 +667,9 @@ def release(
         If omitted, a git submodule is updated. If specified, git submodules will not be updated/initialized before packaging.
     asset_paths
         Additional asset to be packaged/released.
+    plugin_repo_stylesheet (bool, optional): add XSL stylesheet to plugins.xml. Defaults to True.
     """
-
+    # determine release tag: from parameters or version in changelog
     if release_version == "latest":
         parser = ChangelogParser(
             parent_folder=Path(parameters.plugin_path).resolve().parent,
@@ -664,6 +711,7 @@ def release(
     )
 
     if github_token is not None:
+        logger.info("Pushing archive to GitHub Release")
         upload_asset_to_github_release(
             parameters,
             asset_path=archive_name,
@@ -678,6 +726,7 @@ def release(
                 is_prerelease=is_prerelease,
                 archive=archive_name,
                 osgeo_username=osgeo_username,
+                plugin_repo_stylesheet=plugin_repo_stylesheet,
             )
             upload_asset_to_github_release(
                 parameters,
@@ -696,8 +745,9 @@ def release(
             is_prerelease=is_prerelease,
             osgeo_username=osgeo_username,
             plugin_repo_url=plugin_repo_url,
+            plugin_repo_stylesheet=plugin_repo_stylesheet,
         )
-        logger.info(f"Local XML repo file created : {xml_repo}")
+        logger.info(f"Local XML repo file created: {xml_repo}")
 
     if qgis_token and (osgeo_username or osgeo_password):
         logger.error("Not possible to have both parameters OSGeo and QGIS token")

@@ -1,4 +1,5 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
+__STYLESHEET_PI__
 <plugins>
     <pyqgis_plugin name="__PLUGIN_NAME__" version="__RELEASE_VERSION__" __REPO_PLUGIN_ID__>
         <about><![CDATA[__ABOUT__]]></about>

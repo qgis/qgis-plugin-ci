@@ -28,6 +28,8 @@ options:
   -r, --create-plugin-repo
                         Will create a XML repo as a Github release asset. Github token is
                         required.
+  --no-repository-stylesheet
+                        Do not embed the XSL stylesheet reference in the generated plugins.xml.
   -c, --allow-uncommitted-changes
                         If omitted, uncommitted changes are not allowed before releasing. If
                         specified and some changes are detected, a hard reset on a stash
