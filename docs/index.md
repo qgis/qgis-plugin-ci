@@ -39,6 +39,7 @@ configuration/translation
 caption: Use the CLI
 maxdepth: 1
 ---
+usage/cli_reference
 usage/cli_changelog
 usage/cli_package
 usage/cli_release

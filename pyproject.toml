@@ -55,6 +55,7 @@ dev = [
 doc = [
     "furo>=2024",
     "myst-parser[linkify]>=4",
+    "sphinx-argparse>=0.5.2,<1",
     "sphinx-autobuild>=2024",
     "sphinx-copybutton>=0.5",
     "sphinx-design>=0.6.0",

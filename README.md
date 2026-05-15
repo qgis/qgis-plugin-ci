@@ -15,13 +15,13 @@ These scripts are written for and tested on GitHub, Travis-CI, github workflows 
 - Publish plugin in Github releases, option to deploy a custom repository
 - Easily integrated in Travis-CI or github workflows
 - Completely handle translations with Transifex:
-  - create the project and the languages
-  - pull and push translations
-  - all TS/QM files can be managed on the CI, the `i18n` folder can be omitted from the Git repository
+    - create the project and the languages
+    - pull and push translations
+    - all TS/QM files can be managed on the CI, the `i18n` folder can be omitted from the Git repository
 - `changelog` section in the metadata.txt can be populated if the CHANGELOG.md is present
 - set the `experimental` flag according to the tag if needed
 
-:book: For further information, see [the documentation](https://opengisch.github.io/qgis-plugin-ci/).
+📖 For further information, see [the documentation](https://opengisch.github.io/qgis-plugin-ci/).
 
 QGIS-Plugin-CI is best served if you use these two conventions :
 
@@ -31,13 +31,15 @@ QGIS-Plugin-CI is best served if you use these two conventions :
 ## Command line
 
 ```commandline
-usage: qgis-plugin-ci [-h] [-v]
-                      {package,changelog,release,pull-translation,push-translation}
-                      ...
+usage: qgis-plugin-ci [-h] [-v] [--version] [--no-validation] {package,changelog,release,pull-translation,push-translation} ...
 
-optional arguments:
+Package and release QGIS plugins from the command line.
+
+options:
   -h, --help            show this help message and exit
-  -v, --version         print the version and exit
+  -v, --verbose         Verbosity level: None = WARNING, -v = INFO, -vv = DEBUG (default: 1)
+  --version             show program's version number and exit
+  --no-validation       Turn off validation of the version to be released or packaged (default: False)
 
 commands:
   qgis-plugin-ci command
@@ -50,6 +52,8 @@ commands:
     push-translation    update strings and push translations
 ```
 
+📜 See the [full CLI reference in documentation](https://opengisch.github.io/qgis-plugin-ci/usage/cli_reference.html).
+
 ## Requirements
 
 - The code is under a **git** repository (`git archive` is used to bundle the plugin).
@@ -59,7 +63,7 @@ commands:
     - description
     - qgisMinimumVersion
     - repository
-	- tracker
+    - tracker
 
 See `parameters.py` for more parameters and details. Notice that the name of this directory will be used for the zip file.
 
@@ -73,7 +77,7 @@ See `parameters.py` for more parameters and details. Notice that the name of thi
 When releasing, you can publish the plugin :
 
 1. In the official QGIS plugin repository. You need to provide user name and password for your Osgeo account.
-2. As a custom repository in Github releases and which can be added later in QGIS. The address will be: https://github.com/__ORG__/__REPO__/releases/latest/download/plugins.xml
+2. As a custom repository in Github releases and which can be added later in QGIS. The address will be: <https://github.com/__ORG__/__REPO__/releases/latest/download/plugins.xml>
 
 Both can be achieved in the same process.
 

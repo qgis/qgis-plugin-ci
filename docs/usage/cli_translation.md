@@ -1,26 +1,21 @@
 # Commands related to the translation
 
-## Pull translations
+## Transifex
 
-```bash
-usage: qgis-plugin-ci pull-translation [-h] [--compile] transifex_token
+### Pull translation
 
-positional arguments:
-  transifex_token  The Transifex API token
-
-optional arguments:
-  -h, --help       show this help message and exit
-  --compile        Will compile TS files into QM files
+```{argparse}
+:func: make_parser
+:module: qgispluginci.cli
+:path: pull-translation
+:prog: qgis-plugin-ci
 ```
 
-## Push translations
+### Push translation
 
-```bash
-usage: qgis-plugin-ci push-translation [-h] transifex_token
-
-positional arguments:
-  transifex_token  The Transifex API token
-
-optional arguments:
-  -h, --help       show this help message and exit
+```{argparse}
+:func: make_parser
+:module: qgispluginci.cli
+:path: push-translation
+:prog: qgis-plugin-ci
 ```

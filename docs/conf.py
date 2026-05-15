@@ -45,6 +45,7 @@ extensions = [
     "sphinx.ext.extlinks",
     # 3rd party
     "myst_parser",
+    "sphinxarg.ext",
     "sphinx_copybutton",
     "sphinx_design",
     "sphinx_sitemap",
@@ -100,6 +101,13 @@ html_theme_options = {
 
 # -- EXTENSIONS --------------------------------------------------------
 
+
+# argparse
+sphinxarg_build_commands_index = True
+sphinxarg_commands_index_in_toctree = True
+
+
+# MyST
 myst_enable_extensions = [
     "colon_fence",
     "deflist",

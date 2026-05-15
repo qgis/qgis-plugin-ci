@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import logging
+from html import parser
 from importlib.metadata import version
 
 from qgispluginci.changelog import ChangelogParser
@@ -13,10 +14,16 @@ __version__ = version("qgis-plugin-ci")
 __title__ = "QGISPluginCI"
 
 
-def cli():
-    # create the top-level parser
+def make_parser() -> argparse.ArgumentParser:
+    """Build and return the argument parser for qgis-plugin-ci.
+
+    Returns:
+        argparse.ArgumentParser: fully configured top-level parser.
+    """
     parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        prog="qgis-plugin-ci",
+        description="Package and release QGIS plugins from the command line.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
     # Optional verbosity counter (eg. -v, -vv, -vvv, etc.)
@@ -91,8 +98,8 @@ def cli():
     changelog_parser.add_argument(
         "release_version",
         help=(
-            "The version to be released. If nothing is specified, the latest version specified into the changelog is "
-            "used."
+            "The version to be released. If nothing is specified, the latest version "
+            "specified into the changelog is used."
         ),
         default="latest",
     )
@@ -176,7 +183,12 @@ def cli():
     )
     push_tr_parser.add_argument("transifex_token", help="The Transifex API token")
 
-    args = parser.parse_args()
+    return parser
+
+
+def cli():
+    args_parser = make_parser()
+    args = args_parser.parse_args()
     Parameters.validate_args(args)
 
     # set log level depending on verbosity argument
@@ -196,8 +208,8 @@ def cli():
 
     # if no command is passed, print the help and exit
     if not args.command:
-        parser.print_help()
-        parser.exit()
+        args_parser.print_help()
+        args_parser.exit()
 
     exit_val = 0
 
