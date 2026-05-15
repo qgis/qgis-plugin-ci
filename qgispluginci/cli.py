@@ -183,7 +183,7 @@ def cli():
     args.verbosity = 40 - (10 * args.verbosity) if args.verbosity > 0 else 0
     logging.basicConfig(
         level=args.verbosity,
-        format="%(asctime)s||%(levelname)s||%(module)s||%(message)s",
+        format="%(asctime)s||%(levelname)s||%(module)s||%(funcName)s||%(lineno)d||%(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
     )
 
