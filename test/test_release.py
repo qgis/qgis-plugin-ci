@@ -2,6 +2,7 @@
 
 # standard
 import argparse
+import difflib
 import filecmp
 import os
 import re
@@ -17,6 +18,7 @@ import yaml
 from github import Github, GithubException
 
 # Project
+from qgispluginci import __version__
 from qgispluginci.changelog import ChangelogParser
 from qgispluginci.exceptions import GithubReleaseNotFound
 from qgispluginci.parameters import DASH_WARNING, Parameters
@@ -142,9 +144,8 @@ class TestRelease(unittest.TestCase):
             r"<update_date>[^<]+<\/update_date>",
             "<update_date>__TODAY__</update_date>",
         )
-        if not filecmp.cmp("test/plugins.xml.expected", xml_repo, shallow=False):
-            import difflib
 
+        if not filecmp.cmp("test/plugins.xml.expected", xml_repo, shallow=False):
             with open("test/plugins.xml.expected") as f:
                 text1 = f.readlines()
             with open(xml_repo) as f:

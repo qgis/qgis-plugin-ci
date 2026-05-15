@@ -1,6 +1,6 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 __STYLESHEET_PI__
-<plugins>
+<plugins generator_name="__GENERATOR_NAME__" generator_version="__GENERATOR_VERSION__">
     <pyqgis_plugin name="__PLUGIN_NAME__" version="__RELEASE_VERSION__" __REPO_PLUGIN_ID__>
         <about><![CDATA[__ABOUT__]]></about>
         <author_name><![CDATA[__AUTHOR__]]></author_name>

@@ -1,6 +1,6 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
+<?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="plugins.xsl"?>
-<plugins>
+<plugins generator_name="qgis-plugin-ci" generator_version="0.0.1">
     <pyqgis_plugin name="QGIS Plugin CI Testing" version="0.1.2" plugin_id="plugins.qgis.org:99999">
         <about><![CDATA[Downloading would be useless]]></about>
         <author_name><![CDATA[Denis Rouzaud]]></author_name>
