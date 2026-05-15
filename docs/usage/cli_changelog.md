@@ -19,23 +19,20 @@ changelog_path=subfolder/CHANGELOG.md
 
 ## Command help
 
-```bash
-usage: qgis-plugin-ci changelog [-h] release_version
-
-positional arguments:
-  release_version  The version to be released. If nothing is speficied, the latest
-                   version specified into the changelog is used.
-
-optional arguments:
-  -h, --help       show this help message and exit
+```{argparse}
+:func: make_parser
+:module: qgispluginci.cli
+:path: changelog
+:prog: qgis-plugin-ci
 ```
 
 ## Requirements
 
 The `CHANGELOG.md` file must follow the convention [Keep A Changelog](https://keepachangelog.com/). For example, see this [repository changelog](https://github.com/opengisch/qgis-plugin-ci/blob/master/CHANGELOG.md).
 
-> **NOTE**
-> Currently the "Unreleased" section and subsections (e.g. "Fixed" etc) are not supported, see [#56](https://github.com/opengisch/qgis-plugin-ci/issues/56).
+:::{warning}
+Currently the "Unreleased" section and subsections (e.g. "Fixed" etc) are not supported, see [#56](https://github.com/opengisch/qgis-plugin-ci/issues/56).
+:::
 
 ## Use cases
 
