@@ -23,6 +23,7 @@ import pyqt5ac
 import requests
 from github import Github, GithubException
 
+from qgispluginci import __package_name__, __version__
 from qgispluginci.changelog import ChangelogParser
 from qgispluginci.exceptions import (
     BuiltResourceInSources,
@@ -429,6 +430,8 @@ def create_plugin_repo(
         "__DEPRECATED__": str(parameters.deprecated),
         "__DESCRIPTION__": parameters.description,
         "__EXPERIMENTAL__": str(is_prerelease or parameters.experimental),
+        "__GENERATOR_NAME__": __package_name__,
+        "__GENERATOR_VERSION__": f"{__version__}",
         "__HOMEPAGE__": parameters.homepage,
         "__ICON__": parameters.icon,
         "__ISSUE_TRACKER__": parameters.issue_tracker,
