@@ -145,6 +145,12 @@ class TestRelease(unittest.TestCase):
             "<update_date>__TODAY__</update_date>",
         )
 
+        replace_in_file(
+            xml_repo,
+            r'generator_version="[^"]+"',
+            'generator_version="__GENERATOR_VERSION__"',
+        )
+
         if not filecmp.cmp("test/plugins.xml.expected", xml_repo, shallow=False):
             with open("test/plugins.xml.expected") as f:
                 text1 = f.readlines()
