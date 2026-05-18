@@ -15,6 +15,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+# 3rd party
+import keepachangelog
+
+# package
 from qgispluginci.version_note import VersionNote
 
 

@@ -1,15 +1,18 @@
-from typing import NamedTuple
+from dataclasses import dataclass
 
 
-class VersionNote(NamedTuple):
-    major: str = None
-    minor: str = None
-    patch: str = None
-    url: str = None
-    prerelease: str = None
-    separator: str = None
-    date: str = None
-    text_raw: str = None
+@dataclass
+class VersionNote:
+    """Object describing a version note."""
+
+    date: str | None = None
+    major: str | None = None
+    minor: str | None = None
+    patch: str | None = None
+    prerelease: str | None = None
+    separator: str | None = None
+    text_raw: str | None = None
+    url: str | None = None
 
     @property
     def text(self) -> str:
@@ -25,6 +28,11 @@ class VersionNote(NamedTuple):
 
     @property
     def version(self) -> str:
+        """Version name.
+
+        Returns:
+            str: _description_
+        """
         if self.prerelease:
             return f"{self.major}.{self.minor}.{self.patch}-{self.prerelease}"
         else:
