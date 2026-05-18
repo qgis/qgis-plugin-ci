@@ -208,7 +208,7 @@
     <xsl:template match="pyqgis_plugin">
         <div class="plugin-card">
             <div class="plugin-header">
-                <xsl:if test="string-length(icon) &gt; 0">
+                <xsl:if test="string-length(icon) &gt; 0 and starts-with(icon, 'http')">
                     <img class="plugin-icon" alt="Plugin icon">
                         <xsl:attribute name="src">
                             <xsl:value-of select="icon"/>

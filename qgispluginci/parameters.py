@@ -119,6 +119,10 @@ class Parameters:
         If True, the `project_slug` is used for the plugin directory name in the installation.
         Defaults to False
 
+    repository_url_raw: str
+        Raw URL to plugin repository. Used to determine absolute URL to resources like
+        plugin's icon in the custom repository plugins.xml.
+        Defaults to None.
     """
 
     @classmethod
@@ -224,6 +228,7 @@ class Parameters:
             "github_organization_slug",
             os.environ.get("TRAVIS_REPO_SLUG", "").split("/")[0],
         )
+        self.repository_url_raw: str | None = definition.get("repository_url_raw")
         self.transifex_organization = definition.get(
             "transifex_organization", self.github_organization_slug
         )

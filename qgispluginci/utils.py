@@ -85,6 +85,30 @@ def parse_tag(version_tag: str) -> VersionNote | None:
         return VersionNote()
 
 
+def resolve_plugin_resource_url(
+    raw_base_url: str | None,
+    release_tag: str | None,
+    plugin_path: str | None,
+    plugin_resource: str | None,
+) -> str | None:
+    """Resolve absolute resource (typically the icon) URL using different parameters.
+
+    Args:
+        raw_base_url (str | None): raw repository base URL.
+        release_tag (str | None): git tag to be released.
+        plugin_path (str | None): directory of the source code in the repository.
+        plugin_resource (str | None): relative path to the plugin's resource starting
+            from plugin_path.
+
+    Returns:
+        str | None: absolute URL to plugin's resource
+    """
+    if not plugin_resource or plugin_resource.startswith("http") or not raw_base_url:
+        return plugin_resource
+    base = raw_base_url.rstrip("/")
+    return f"{base}/{release_tag}/{plugin_path}/{plugin_resource}"
+
+
 def set_datetime_zoneinfo(
     input_datetime: date | datetime, config_timezone: str = "UTC"
 ) -> datetime:

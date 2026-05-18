@@ -31,3 +31,4 @@ junit
 .coverage
 coverage.xml
 plugins.xml
+plugins.xsl
