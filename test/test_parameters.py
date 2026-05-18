@@ -2,6 +2,7 @@
 
 # standard
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 # Project
@@ -30,5 +31,8 @@ class TestParameters(unittest.TestCase):
         parameters = Parameters.make_from(
             args={}, path_to_config_file=Path("test/fixtures/pyproject.toml")
         )
+        self.assertIsInstance(parameters.create_datetime, datetime)
+        self.assertIsNotNone(parameters.create_datetime.tzinfo)
+
         self.assertEqual("qgis_plugin_CI_testing", parameters.plugin_path)
         self.assertEqual("CHANGELOG.md", parameters.changelog_path)
