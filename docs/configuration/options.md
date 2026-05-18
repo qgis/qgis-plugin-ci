@@ -18,7 +18,7 @@ to know parameters which are available in the file.
 
 ## Conventions
 
-QGIS-Plugin-CI is best served if you use these two conventions :
+QGIS-Plugin-CI is best served if you use these two conventions:
 
 - [Semantic versioning](https://semver.org/)
 - [Keep A Changelog](https://keepachangelog.com)

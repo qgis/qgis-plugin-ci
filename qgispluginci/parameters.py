@@ -16,7 +16,7 @@ import re
 import sys
 from argparse import Namespace
 from collections.abc import Callable, Iterator
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -237,8 +237,13 @@ class Parameters:
         )
 
         self.timezone = definition.get("timezone", "UTC")
+
+        # depending on config file format, create date can be a date or a str
+        _create_date_raw = definition.get("create_date", datetime.now(timezone.utc))
+        if isinstance(_create_date_raw, str):
+            _create_date_raw = date.fromisoformat(_create_date_raw)
         self.create_datetime: datetime = set_datetime_zoneinfo(
-            input_datetime=definition.get("create_date", datetime.now(timezone.utc)),
+            input_datetime=_create_date_raw,
             config_timezone=self.timezone,
         )
         self.repository_plugin_id: str | None = definition.get("repository_plugin_id")
