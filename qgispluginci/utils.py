@@ -122,7 +122,7 @@ def set_datetime_zoneinfo(
     Returns:
         datetime: offset-aware datetime
     """
-    if isinstance(input_datetime, date):
+    if isinstance(input_datetime, date) and not isinstance(input_datetime, datetime):
         input_datetime = datetime.combine(date=input_datetime, time=datetime.min.time())
         logger.debug(
             f"Input is a date, converted to datetime with time set to 00:00:00: {input_datetime}"
