@@ -48,6 +48,7 @@ extensions = [
     "sphinxarg.ext",
     "sphinx_copybutton",
     "sphinx_design",
+    "sphinxcontrib.mermaid",
     "sphinx_sitemap",
 ]
 
@@ -106,6 +107,16 @@ html_theme_options = {
 sphinxarg_build_commands_index = True
 sphinxarg_commands_index_in_toctree = True
 
+# mermaid
+mermaid_d3_zoom = True
+mermaid_params = [
+    "--theme",
+    "forest",
+    "--width",
+    "100%",
+    "--backgroundColor",
+    "transparent",
+]
 
 # MyST
 myst_enable_extensions = [

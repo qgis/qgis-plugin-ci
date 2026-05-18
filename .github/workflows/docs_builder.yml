@@ -30,7 +30,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PYTHON_VERSION: 3.11
+  PYTHON_VERSION: 3.14
 
 jobs:
   build-docs:
@@ -51,11 +51,18 @@ jobs:
     - name: Install project as a package
       run: python -m pip install -e .
 
+    - name: Generates dependencies graph page with pipdetree
+      run: |
+        python -m pip install pipdeptree
+        echo -e "\`\`\`{mermaid}" > docs/misc/_dependencies.md
+        pipdeptree --exclude pip,pipdeptree,setuptools,wheel --extras -o mermaid >> docs/misc/_dependencies.md
+        echo -e "\`\`\`" >> docs/misc/_dependencies.md
+
     # this job must run before installing other dependencies to avoid listing everything
     - name: Generates licenses page with pip-licences
       run: |
-        python -m pip install -U "pip-licenses>=4,<5"
-        pip-licenses --format=markdown --with-authors --with-description --with-urls --ignore-packages qgis-plugin-ci --output-file=docs/misc/licenses.md
+        python -m pip install pip-licenses
+        pip-licenses --format=markdown --with-authors --with-description --with-urls --ignore-packages qgis-plugin-ci --output-file=docs/misc/_licenses.md
 
     - name: Install documentation requirements
       run: python -m pip install -U -e .[doc]
