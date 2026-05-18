@@ -38,6 +38,7 @@ from qgispluginci.utils import (
     convert_octets,
     parse_tag,
     replace_in_file,
+    resolve_plugin_resource_url,
     set_datetime_zoneinfo,
 )
 
@@ -433,7 +434,12 @@ def create_plugin_repo(
         "__GENERATOR_NAME__": __package_name__,
         "__GENERATOR_VERSION__": f"{__version__}",
         "__HOMEPAGE__": parameters.homepage,
-        "__ICON__": parameters.icon,
+        "__ICON__": resolve_plugin_resource_url(
+            plugin_resource=parameters.icon,
+            raw_base_url=parameters.repository_url_raw,
+            release_tag=release_tag,
+            plugin_path=parameters.plugin_path,
+        ),
         "__ISSUE_TRACKER__": parameters.issue_tracker,
         "__ORG__": parameters.github_organization_slug,
         "__OSGEO_USERNAME__": osgeo_username or parameters.author,
