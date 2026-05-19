@@ -548,7 +548,19 @@ def upload_plugin_to_osgeo_with_token(archive: str, package_name: str, token: st
                 f"Plugin uploaded on {QGIS_PLUGINS_REPO_URL}/plugins/{package_name}/#plugin-versions"
             )
         except requests.exceptions.HTTPError as error:
-            logger.error(f"HTTP Error {error}", exc_info=error)
+            # Try to surface the server's error payload (the QGIS Plugins
+            # Website returns DRF-style JSON validation errors on 4xx).
+            response = error.response
+            body = None
+            if response is not None:
+                try:
+                    body = response.json()
+                except ValueError:
+                    body = response.text
+            logger.error(
+                f"HTTP Error {error}\nServer response: {body}",
+                exc_info=error,
+            )
             sys.exit(2)
         except requests.exceptions.ConnectionError as error:
             logger.error(f"HTTP connection error {error}", exc_info=error)
