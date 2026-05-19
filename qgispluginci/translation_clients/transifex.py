@@ -109,8 +109,13 @@ class TransifexClient(BaseClient):
             available = []
             try:
                 available = [r.slug for r in resources.all()]
-            except Exception:
-                pass
+            except Exception as list_err:
+                logger.debug(
+                    "Failed to enumerate available Transifex resources for project '%s/%s': %s",
+                    self.config.organization_name,
+                    self.config.project_slug,
+                    list_err,
+                )
             raise DoesNotExist(
                 f"Transifex resource '{self.config.resource_slug}' not found "
                 f"in project '{self.config.organization_name}/{self.config.project_slug}'. "
