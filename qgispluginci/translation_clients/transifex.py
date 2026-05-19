@@ -93,10 +93,29 @@ class TransifexClient(BaseClient):
         logger.info(f"Resource created: {self.config.resource_slug}")
 
     def get_resource(self):
-        resources = self.get_project().fetch("resources")
+        project = self.get_project()
+        if project is None:
+            raise DoesNotExist(
+                f"Transifex project '{self.config.project_slug}' not found "
+                f"in organization '{self.config.organization_name}'. "
+                f"Check the project slug and that the API token has access to it."
+            )
+        resources = project.fetch("resources")
         if not resources:
             return None
-        return resources.get(slug=self.config.resource_slug)
+        try:
+            return resources.get(slug=self.config.resource_slug)
+        except DoesNotExist as e:
+            available = []
+            try:
+                available = [r.slug for r in resources.all()]
+            except Exception:
+                pass
+            raise DoesNotExist(
+                f"Transifex resource '{self.config.resource_slug}' not found "
+                f"in project '{self.config.organization_name}/{self.config.project_slug}'. "
+                f"Available resources: {available or 'none'}."
+            ) from e
 
     def list_resources(self):
         if resources := self.get_project().fetch("resources"):
