@@ -26,8 +26,6 @@ from qgispluginci.version_note import VersionNote
 # ########## Globals #############
 # ################################
 
-# see: https://regex101.com/r/8JROUv/1
-CHANGELOG_REGEXP = r"(?<=##)\s*\[*(v?0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)\]?(\(.*\))?(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?\]*\s-\s*([\d\-/]{10})(.*?)(?=##|\Z)"
 logger = logging.getLogger(__name__)
 
 # ############################################################################
@@ -101,16 +99,90 @@ class ChangelogParser:
     ):
         self.has_changelog(parent_folder=parent_folder, changelog_path=changelog_path)
 
-    def _parse(self) -> list[Any] | None:
+    def _version_note_from_version_number(
+        self, version_key: str, data: dict[str, Any]
+    ) -> VersionNote | None:
+        """Build a :class:`VersionNote` from a keepachangelog version entry.
+
+        Args:
+            version_key (str): version string as returned by keepachangelog.
+            data (dict[str, Any]): the version dict produced by ``keepachangelog.to_dict()``.
+
+        Returns:
+            VersionNote or None if the version string cannot be decomposed.
+        """
+        metadata = data.get("metadata", {})
+
+        # Prefer the already-parsed semantic_version when available
+        # (keepachangelog cannot always produce it, e.g. for "v0.1.1")
+        sem_ver = metadata.get("semantic_version")
+        if sem_ver:
+            major = str(sem_ver["major"])
+            minor = str(sem_ver["minor"])
+            patch = str(sem_ver["patch"])
+            prerelease: str = sem_ver.get("prerelease") or ""
+        else:
+            # Fallback: parse the version string ourselves
+            raw_version = version_key.lstrip("v")
+            if "-" in raw_version:
+                main_version, prerelease = raw_version.split("-", 1)
+            else:
+                main_version, prerelease = raw_version, ""
+
+            parts = main_version.split(".")
+            if len(parts) < 3:
+                logger.warning(
+                    f"Skipping version with unexpected format: {version_key!r}"
+                )
+                return None
+            major, minor, patch = parts[0], parts[1], parts[2]
+
+        # release_date is kept as a string by keepachangelog (non-ISO dates included)
+        release_date = metadata.get("release_date")
+        date_str = str(release_date) if release_date is not None else ""
+
+        raw_text = self._raw_section_text(version_key)
+
+        return VersionNote(
+            major=major,
+            minor=minor,
+            patch=patch,
+            url="",
+            prerelease=prerelease,
+            separator="",
+            date=date_str,
+            text_raw=f"\n{raw_text}\n" if raw_text else "\n",
+        )
+
+    def _parse(self) -> list[VersionNote] | None:
+        """Parse the changelog and return one :class:`VersionNote` per released version.
+
+        Returns:
+            list[VersionNote]: entries ordered newest-first, matching the file order.
+        """
         if not self.CHANGELOG_FILEPATH:
             return None
 
-        with self.CHANGELOG_FILEPATH.open(mode="r", encoding="UTF8") as f:
-            content = f.read()
+        changelog_parsed: dict | None = None
 
-        return re.findall(
-            pattern=CHANGELOG_REGEXP, string=content, flags=re.MULTILINE | re.DOTALL
-        )
+        try:
+            changelog_parsed = keepachangelog.to_dict(
+                str(self.CHANGELOG_FILEPATH), show_unreleased=False
+            )
+            print(changelog_parsed.keys())
+        except Exception as exc:
+            logger.error(
+                f"Failed to parse changelog '{self.CHANGELOG_FILEPATH}'. Trace: {exc}",
+                exc_info=exc,
+            )
+            return None
+
+        result: list[VersionNote] = []
+        for version_key, data in changelog_parsed.items():
+            vn = self._version_note_from_version_number(version_key, data)
+            if vn is not None:
+                result.append(vn)
+        return result
 
     def last_items(self, count: int) -> str:
         """Content to add in the metadata.txt.

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 @dataclass
 class VersionNote:
-    """Object describing a version note."""
+    """Object describing a version note in a changelog."""
 
     date: str | None = None
     major: str | None = None
@@ -13,6 +13,12 @@ class VersionNote:
     separator: str | None = None
     text_raw: str | None = None
     url: str | None = None
+
+    # @classmethod
+    # def from_dict(version_as_dict: dict) -> "VersionNote":
+    #     return VersionNote(
+
+    #     )
 
     @property
     def text(self) -> str:
