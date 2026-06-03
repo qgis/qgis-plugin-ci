@@ -39,7 +39,7 @@ class TestParameters(unittest.TestCase):
         self.assertIsNone(parameters.plugin_repo_url)
 
     def test_plugin_repo_url_from_config(self):
-        """plugin_repo_url doit être lu depuis le fichier de config."""
+        """--plugin-repo-url must be read from config file (repository_plugin_url)."""
         parameters = Parameters.make_from(
             path_to_config_file=Path("test/fixtures/.qgis-plugin-ci")
         )
