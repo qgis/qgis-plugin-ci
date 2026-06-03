@@ -352,6 +352,39 @@ class TestRelease(unittest.TestCase):
             finally:
                 os.chdir(original_dir)
 
+    def test_package_plugin_repo_url_from_config(self):
+        """Test plugin_repo_url from config repository_plugin_url."""
+        self.assertEqual(
+            "https://opengisch.github.io/qgis-plugin-ci/",
+            self.qgis_plugin_config_params.plugin_repo_url,
+        )
+
+        archive_name = self.qgis_plugin_config_params.archive_name(
+            self.qgis_plugin_config_params.plugin_path, RELEASE_VERSION_TEST
+        )
+        original_dir = Path().cwd()
+        with TemporaryDirectory() as tmp_dir:
+            try:
+                os.chdir(tmp_dir)
+                xml_path = create_plugin_repo(
+                    parameters=self.qgis_plugin_config_params,
+                    release_version=RELEASE_VERSION_TEST,
+                    release_tag=RELEASE_VERSION_TEST,
+                    archive=archive_name,
+                    plugin_repo_url=self.qgis_plugin_config_params.plugin_repo_url,
+                )
+                content = Path(xml_path).read_text(encoding="utf-8")
+                expected_url = (
+                    f"https://opengisch.github.io/qgis-plugin-ci/{archive_name}"
+                )
+                self.assertIn(
+                    expected_url,
+                    content,
+                    "Download hyperlink must be the one set in config file",
+                )
+            finally:
+                os.chdir(original_dir)
+
 
 if __name__ == "__main__":
     unittest.main()

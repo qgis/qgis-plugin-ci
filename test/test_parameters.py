@@ -36,3 +36,13 @@ class TestParameters(unittest.TestCase):
 
         self.assertEqual("qgis_plugin_CI_testing", parameters.plugin_path)
         self.assertEqual("CHANGELOG.md", parameters.changelog_path)
+        self.assertIsNone(parameters.plugin_repo_url)
+
+    def test_plugin_repo_url_from_config(self):
+        """plugin_repo_url doit être lu depuis le fichier de config."""
+        parameters = Parameters.make_from(
+            path_to_config_file=Path("test/fixtures/.qgis-plugin-ci")
+        )
+        self.assertEqual(
+            "https://opengisch.github.io/qgis-plugin-ci/", parameters.plugin_repo_url
+        )

@@ -106,6 +106,12 @@ class Parameters:
         The plugin identifier in the repository where it is published or is intended to be published.
         Defaults to None.
 
+    repository_plugin_url: str
+        Base URL used to build the plugin download hyperlink in the custom plugins repository
+        plugins.xml.
+        Can be overriden with the CLI option -u / --plugin-repo-url.
+        Defaults to None.
+
     lrelease_path: str
         The path of lrelease executable
 
@@ -120,7 +126,7 @@ class Parameters:
         Defaults to False
 
     repository_url_raw: str
-        Raw URL to plugin repository. Used to determine absolute URL to resources like
+        Raw URL to source code repository. Used to determine absolute URL to resources like
         plugin's icon in the custom repository plugins.xml.
         Defaults to None.
     """
@@ -229,6 +235,8 @@ class Parameters:
             os.environ.get("TRAVIS_REPO_SLUG", "").split("/")[0],
         )
         self.repository_url_raw: str | None = definition.get("repository_url_raw")
+        self.plugin_repo_url: str | None = definition.get("repository_plugin_url")
+
         self.transifex_organization = definition.get(
             "transifex_organization", self.github_organization_slug
         )

@@ -3,6 +3,7 @@ github_organization_slug: opengisch
 plugin_path: qgis_plugin_CI_testing
 project_slug: qgis-plugin-ci
 repository_plugin_id: "demo.qgis-plugins.ci:99999"
+repository_plugin_url: https://opengisch.github.io/qgis-plugin-ci/
 repository_url_raw: https://raw.githubusercontent.com/opengisch/qgis-plugin-ci
 repository_url: https://github.com/opengisch/qgis-plugin-ci/
 timezone: Europe/Paris

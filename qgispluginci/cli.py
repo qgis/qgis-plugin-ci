@@ -234,12 +234,14 @@ def cli():
 
     # PACKAGE
     if args.command == "package":
+        # repo url from CLI option or from config file
+        plugin_repo_url = args.plugin_repo_url or parameters.plugin_repo_url
         release(
             parameters,
             release_version=args.release_version,
             tx_api_token=args.transifex_token,
             allow_uncommitted_changes=args.allow_uncommitted_changes,
-            plugin_repo_url=args.plugin_repo_url,
+            plugin_repo_url=plugin_repo_url,
             plugin_repo_stylesheet=not args.no_repository_stylesheet,
             disable_submodule_update=args.disable_submodule_update,
             asset_paths=args.asset_path,
