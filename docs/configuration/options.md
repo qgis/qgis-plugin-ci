@@ -32,7 +32,8 @@ QGIS-Plugin-CI is best served if you use these two conventions:
 | `plugin_path` | **yes** | The folder where the source code is located. Shouldn't have any dash character. Defaults to: `slugify(plugin_name)`. | qgis_plugin_CI_testing |
 | `project_slug` | no | The *project* slug on SCM host (e.g. Github) and translation platform (e.g. Transifex).<br/>Not required when running on Travis since deduced from `$TRAVIS_REPO_SLUG`environment variable. | `qgis-plugin-ci` |
 | `repository_plugin_id` | no | The plugin identifier in the repository where it is published or is intended to be published. | Typically the same `plugin_id` value than on the official repository, i.e. `"3951"`. Or using a DNS prefix: `plugins.myorg.com:99999` |
-| `repository_url_raw` | no | | `https://raw.githubusercontent.com/opengisch/qgis-plugin-ci` for a plugin hosted on Github; `https://gitlab.com/Oslandia/qgis/oslandia/-/raw/` for a plugin hosted on gitlab. |
+| `repository_plugin_url` | no | Base URL for the custom plugins repository. Equivalent to and can be overridden by the `-u`/`--plugin-repo-url` CLI option. Typically, the GitHub/GitLab Pages base URL of your project. | `https://opengisch.github.io/qgis-plugin-ci/` for this project. `https://oslandia.gitlab.io/qgis/oslandia/` for this plugin hosted on public GitLab instance. |
+| `repository_url_raw` | no | Base URL to the source code repository. | `https://raw.githubusercontent.com/opengisch/qgis-plugin-ci` for a plugin hosted on Github; `https://gitlab.com/Oslandia/qgis/oslandia/-/raw/` for a plugin hosted on gitlab. |
 | `timezone` | no | The timezone for the plugin creation date. Defaults to: `UTC`. | `Europe/Paris` |
 
 ----
