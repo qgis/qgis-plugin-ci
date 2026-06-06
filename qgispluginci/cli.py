@@ -157,6 +157,13 @@ def make_parser() -> argparse.ArgumentParser:
         help="The token from https://plugins.qgis.org to publish the plugin. Incompatible with the OSGeo user name.",
     )
     release_parser.add_argument(
+        "--auto-approve",
+        action="store_true",
+        default=True,
+        help="Request auto-approval after the server security scan (token uploads only). "
+        "Only takes effect if the token owner has approval rights on plugins.qgis.org.",
+    )
+    release_parser.add_argument(
         "--osgeo-username",
         help="The OSGeo user name to publish the plugin. Incompatible with QGIS token.",
     )
@@ -259,6 +266,7 @@ def cli():
             plugin_repo_stylesheet=not args.no_repository_stylesheet,
             alternative_repo_url=args.alternative_repo_url,
             qgis_token=args.qgis_token,
+            auto_approve=args.auto_approve,
             osgeo_username=args.osgeo_username,
             osgeo_password=args.osgeo_password,
             allow_uncommitted_changes=args.allow_uncommitted_changes,
