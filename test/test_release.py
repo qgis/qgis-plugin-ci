@@ -7,6 +7,7 @@ import filecmp
 import os
 import re
 import unittest
+import unittest.mock
 import urllib.request
 from itertools import product
 from pathlib import Path
