@@ -158,10 +158,12 @@ def make_parser() -> argparse.ArgumentParser:
     )
     release_parser.add_argument(
         "--auto-approve",
-        action="store_true",
-        default=True,
+        action=argparse.BooleanOptionalAction,
+        default=None,
         help="Request auto-approval after the server security scan (token uploads only). "
-        "Only takes effect if the token owner has approval rights on plugins.qgis.org.",
+        "Only takes effect if the token owner has approval rights on plugins.qgis.org. "
+        "Defaults to the 'auto_approve' configuration file setting, or True if unset. "
+        "Use --no-auto-approve to disable.",
     )
     release_parser.add_argument(
         "--osgeo-username",
@@ -266,7 +268,11 @@ def cli():
             plugin_repo_stylesheet=not args.no_repository_stylesheet,
             alternative_repo_url=args.alternative_repo_url,
             qgis_token=args.qgis_token,
-            auto_approve=args.auto_approve,
+            auto_approve=(
+                args.auto_approve
+                if args.auto_approve is not None
+                else parameters.auto_approve
+            ),
             osgeo_username=args.osgeo_username,
             osgeo_password=args.osgeo_password,
             allow_uncommitted_changes=args.allow_uncommitted_changes,
