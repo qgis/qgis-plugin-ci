@@ -374,9 +374,7 @@ class TestRelease(unittest.TestCase):
                     plugin_repo_url=self.qgis_plugin_config_params.plugin_repo_url,
                 )
                 content = Path(xml_path).read_text(encoding="utf-8")
-                expected_url = (
-                    f"https://qgis.github.io/qgis-plugin-ci/{archive_name}"
-                )
+                expected_url = f"https://qgis.github.io/qgis-plugin-ci/{archive_name}"
                 self.assertIn(
                     expected_url,
                     content,
