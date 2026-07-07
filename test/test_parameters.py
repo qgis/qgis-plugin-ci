@@ -44,5 +44,5 @@ class TestParameters(unittest.TestCase):
             path_to_config_file=Path("test/fixtures/.qgis-plugin-ci")
         )
         self.assertEqual(
-            "https://opengisch.github.io/qgis-plugin-ci/", parameters.plugin_repo_url
+            "https://qgis.github.io/qgis-plugin-ci/", parameters.plugin_repo_url
         )

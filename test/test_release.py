@@ -52,7 +52,7 @@ class TestRelease(unittest.TestCase):
         self.t = None
         if self.github_token:
             print("init Github")
-            self.repo = Github(self.github_token).get_repo("opengisch/qgis-plugin-ci")
+            self.repo = Github(self.github_token).get_repo("qgis/qgis-plugin-ci")
         self.clean_assets()
 
     def tearDown(self):
@@ -136,7 +136,7 @@ class TestRelease(unittest.TestCase):
 
         # check the custom plugin repo
         _, xml_repo = mkstemp(suffix=".xml")
-        url = f"https://github.com/opengisch/qgis-plugin-ci/releases/download/{RELEASE_VERSION_TEST}/plugins.xml"
+        url = f"https://github.com/qgis/qgis-plugin-ci/releases/download/{RELEASE_VERSION_TEST}/plugins.xml"
         print(f"retrieve repo from {url}")
         urllib.request.urlretrieve(url, xml_repo)
         replace_in_file(
@@ -355,7 +355,7 @@ class TestRelease(unittest.TestCase):
     def test_package_plugin_repo_url_from_config(self):
         """Test plugin_repo_url from config repository_plugin_url."""
         self.assertEqual(
-            "https://opengisch.github.io/qgis-plugin-ci/",
+            "https://qgis.github.io/qgis-plugin-ci/",
             self.qgis_plugin_config_params.plugin_repo_url,
         )
 
@@ -374,9 +374,7 @@ class TestRelease(unittest.TestCase):
                     plugin_repo_url=self.qgis_plugin_config_params.plugin_repo_url,
                 )
                 content = Path(xml_path).read_text(encoding="utf-8")
-                expected_url = (
-                    f"https://opengisch.github.io/qgis-plugin-ci/{archive_name}"
-                )
+                expected_url = f"https://qgis.github.io/qgis-plugin-ci/{archive_name}"
                 self.assertIn(
                     expected_url,
                     content,

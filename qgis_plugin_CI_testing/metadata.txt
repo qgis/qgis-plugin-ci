@@ -12,9 +12,9 @@ changelog=changelog
 # Tags are comma separated with spaces allowed
 tags=
 
-tracker=https://github.com/opengisch/qgis-plugin-ci/issues
-homepage=https://github.com/opengisch/qgis-plugin-ci
-repository=https://github.com/opengisch/qgis-plugin-ci
+tracker=https://github.com/qgis/qgis-plugin-ci/issues
+homepage=https://github.com/qgis/qgis-plugin-ci
+repository=https://github.com/qgis/qgis-plugin-ci
 
 category=plugins
 

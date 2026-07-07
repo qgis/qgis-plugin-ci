@@ -68,10 +68,10 @@ doc = [
 qgis-plugin-ci = "qgispluginci.cli:cli"
 
 [project.urls]
-homepage = "https://opengisch.github.io/qgis-plugin-ci/"
-documentation = "https://opengisch.github.io/qgis-plugin-ci/"
-repository = "https://github.com/opengisch/qgis-plugin-ci/"
-tracker = "https://github.com/opengisch/qgis-plugin-ci/issues"
+homepage = "https://qgis.github.io/qgis-plugin-ci/"
+documentation = "https://qgis.github.io/qgis-plugin-ci/"
+repository = "https://github.com/qgis/qgis-plugin-ci/"
+tracker = "https://github.com/qgis/qgis-plugin-ci/issues"
 
 # -- TOOLING --
 [tool.coverage.report]

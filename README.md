@@ -6,7 +6,7 @@
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/opengisch/qgis-plugin-ci/master.svg)](https://results.pre-commit.ci/latest/github/opengisch/qgis-plugin-ci/master)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/qgis/qgis-plugin-ci/master.svg)](https://results.pre-commit.ci/latest/github/qgis/qgis-plugin-ci/master)
 
 Contains scripts to perform automated testing and deployment for QGIS plugins.
 These scripts are written for and tested on GitHub, Travis-CI, github workflows and Transifex.
@@ -21,7 +21,7 @@ These scripts are written for and tested on GitHub, Travis-CI, github workflows 
 - `changelog` section in the metadata.txt can be populated if the CHANGELOG.md is present
 - set the `experimental` flag according to the tag if needed
 
-📖 For further information, see [the documentation](https://opengisch.github.io/qgis-plugin-ci/).
+📖 For further information, see [the documentation](https://qgis.github.io/qgis-plugin-ci/).
 
 QGIS-Plugin-CI is best served if you use these two conventions :
 
@@ -52,7 +52,7 @@ commands:
     push-translation    update strings and push translations
 ```
 
-📜 See the [full CLI reference in documentation](https://opengisch.github.io/qgis-plugin-ci/usage/cli_reference.html).
+📜 See the [full CLI reference in documentation](https://qgis.github.io/qgis-plugin-ci/usage/cli_reference.html).
 
 ## Requirements
 

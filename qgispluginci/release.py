@@ -495,7 +495,7 @@ def create_plugin_repo(
     ) as xml_template:
         configure_file(xml_template, xml_repo, replace_dict)
 
-    # include XSL stylesheet. See: https://github.com/opengisch/qgis-plugin-ci/issues/375
+    # include XSL stylesheet. See: https://github.com/qgis/qgis-plugin-ci/issues/375
     if plugin_repo_stylesheet:
         logger.debug(
             "Including shipped XSL stylesheet into the custom plugins repository."
