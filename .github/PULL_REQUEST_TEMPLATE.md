@@ -6,7 +6,7 @@
 
 ## Author's checklist
 
-- [ ] I have read the [contributing guidelines](https://github.com/opengisch/qgis-plugin-ci?tab=contributing-ov-file#readme) and my pull request follows them.
+- [ ] I have read the [contributing guidelines](https://github.com/qgis/qgis-plugin-ci?tab=contributing-ov-file#readme) and my pull request follows them.
 - [ ] my commits tend to comply with [Conventional Commits](https://www.conventionalcommits.org/); so they are descriptive and explain the rationale for changes. Messages and description are self-explanatory to make the git log a readable story of the project.
 - [ ] I have added tests that prove my fix is effective or that my feature works.
 - [ ] I have added necessary documentation (if appropriate).

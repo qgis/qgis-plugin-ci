@@ -12,7 +12,7 @@
 
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/opengisch/qgis-plugin-ci/master.svg)](https://results.pre-commit.ci/latest/github/opengisch/qgis-plugin-ci/master)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/qgis/qgis-plugin-ci/master.svg)](https://results.pre-commit.ci/latest/github/qgis/qgis-plugin-ci/master)
 
 ## Installation
 

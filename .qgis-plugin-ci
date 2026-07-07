@@ -1,11 +1,11 @@
 create_date: 2019-06-19
-github_organization_slug: opengisch
+github_organization_slug: qgis
 plugin_path: qgis_plugin_CI_testing
 project_slug: qgis-plugin-ci
 repository_plugin_id: "demo.qgis-plugins.ci:99999"
-repository_plugin_url: https://opengisch.github.io/qgis-plugin-ci/
-repository_url_raw: https://raw.githubusercontent.com/opengisch/qgis-plugin-ci
-repository_url: https://github.com/opengisch/qgis-plugin-ci/
+repository_plugin_url: https://qgis.github.io/qgis-plugin-ci/
+repository_url_raw: https://raw.githubusercontent.com/qgis/qgis-plugin-ci
+repository_url: https://github.com/qgis/qgis-plugin-ci/
 timezone: Europe/Paris
 transifex_coordinator: geoninja
 transifex_organization: pytransifex

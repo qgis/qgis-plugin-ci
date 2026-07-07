@@ -91,7 +91,7 @@ class TestChangelog(unittest.TestCase):
 
     def test_changelog_content_latest(self):
         """Test against the latest special option value. \
-        See: https://github.com/opengisch/qgis-plugin-ci/pull/33
+        See: https://github.com/qgis/qgis-plugin-ci/pull/33
         """
         # expected result
         expected_latest = (

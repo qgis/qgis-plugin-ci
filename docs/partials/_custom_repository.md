@@ -36,6 +36,6 @@ Generates the following `plugins.xml` file:
 </plugins>
 ```
 
-Since its version 2.10, it comes by default with a [plugins.xsl stylesheet](https://github.com/opengisch/qgis-plugin-ci/blob/master/qgispluginci/repository/plugins.xsl) to make the `plugins.xml` human-readable. If you prefer having a raw `plugins.xml`, use the `--no-repository-stylesheet` option.
+Since its version 2.10, it comes by default with a [plugins.xsl stylesheet](https://github.com/qgis/qgis-plugin-ci/blob/master/qgispluginci/repository/plugins.xsl) to make the `plugins.xml` human-readable. If you prefer having a raw `plugins.xml`, use the `--no-repository-stylesheet` option.
 
 ![QGIS Plugin CI - Custom plugins repository with stylesheet](../static/img/custom_repository_with_stylesheet.webp)
