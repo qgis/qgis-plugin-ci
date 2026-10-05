@@ -47,7 +47,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pre-commit>=4.5,<5",
-    "ruff>=0.15.11,<0.16",
+    "ruff>=0.15.11,<0.17",
     # testing: TODO: move into a separate test section
     "pytest-cov>=7.1.0,<8",
 ]
