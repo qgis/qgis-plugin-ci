@@ -61,11 +61,11 @@ class Parameters:
 
     github_organization_slug: str
         The organization slug on SCM host (e.g. Github) and translation platform (e.g. Transifex).
-        Not required when running on Travis since deduced from `$TRAVIS_REPO_SLUG`environment variable.
+        Not required when running on Travis since deduced from `$TRAVIS_REPO_SLUG` environment variable.
 
     project_slug: str
         The project slug on SCM host (e.g. Github) and translation platform (e.g. Transifex).
-        Not required when running on Travis since deduced from `$TRAVIS_REPO_SLUG`environment variable.
+        Not required when running on Travis since deduced from `$TRAVIS_REPO_SLUG` environment variable.
 
     transifex_organization: str
         The organization name in Transifex
