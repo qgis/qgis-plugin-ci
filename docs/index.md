@@ -123,6 +123,7 @@ VeriVD
 pgMetadata
 ^^^^^^
 
+* using a `setup.cfg` file
 * Released using GitHub Actions and Transifex
 
 :::
