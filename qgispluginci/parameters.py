@@ -129,6 +129,10 @@ class Parameters:
         Raw URL to source code repository. Used to determine absolute URL to resources like
         plugin's icon in the custom repository plugins.xml.
         Defaults to None.
+
+    skip_security_rules:
+        List of security rules to be skipped, identified by the rule's check code.
+        Defaults to None.
     """
 
     @classmethod
@@ -250,6 +254,14 @@ class Parameters:
         )
 
         self.timezone = definition.get("timezone", "UTC")
+
+        _rules_list = definition.get("skip_security_rules")
+        # setup.cfg does not support automatically parsing lists
+        if isinstance(_rules_list, str):
+            _rules_list = [rule.strip() for rule in _rules_list.split(",")]
+        self.skip_security_rules: dict | None = (
+            {"skip_security_rules": _rules_list} if _rules_list else None
+        )
 
         # depending on config file format, create date can be a date or a str
         _create_date_raw = definition.get("create_date", datetime.now(timezone.utc))

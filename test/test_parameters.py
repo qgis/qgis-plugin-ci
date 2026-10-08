@@ -46,3 +46,48 @@ class TestParameters(unittest.TestCase):
         self.assertEqual(
             "https://qgis.github.io/qgis-plugin-ci/", parameters.plugin_repo_url
         )
+
+    def test_skip_security_rules_from_pyproject(self):
+        parameters = Parameters.make_from(
+            path_to_config_file=Path("test/fixtures/pyproject.toml")
+        )
+
+        print(parameters.skip_security_rules)
+
+        self.assertIsInstance(parameters.skip_security_rules, dict)
+        self.assertIsInstance(
+            parameters.skip_security_rules["skip_security_rules"], list
+        )
+        self.assertEqual(
+            "B311", parameters.skip_security_rules["skip_security_rules"][0]
+        )
+
+    def test_skip_security_rules_from_dot_qgis_plugin_ci(self):
+        parameters = Parameters.make_from(
+            path_to_config_file=Path("test/fixtures/.qgis-plugin-ci")
+        )
+
+        print(parameters.skip_security_rules)
+
+        self.assertIsInstance(parameters.skip_security_rules, dict)
+        self.assertIsInstance(
+            parameters.skip_security_rules["skip_security_rules"], list
+        )
+        self.assertEqual(
+            "B311", parameters.skip_security_rules["skip_security_rules"][0]
+        )
+
+    def test_skip_security_rules_from_config(self):
+        parameters = Parameters.make_from(
+            path_to_config_file=Path("test/fixtures/setup.cfg")
+        )
+
+        print(parameters.skip_security_rules)
+
+        self.assertIsInstance(parameters.skip_security_rules, dict)
+        self.assertIsInstance(
+            parameters.skip_security_rules["skip_security_rules"], list
+        )
+        self.assertEqual(
+            "B311", parameters.skip_security_rules["skip_security_rules"][0]
+        )

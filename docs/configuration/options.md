@@ -35,6 +35,7 @@ QGIS-Plugin-CI is best served if you use these two conventions:
 | `repository_plugin_url` | no | Base URL for the custom plugins repository. Equivalent to and can be overridden by the `-u`/`--plugin-repo-url` CLI option. Typically, the GitHub/GitLab Pages base URL of your project. | `https://qgis.github.io/qgis-plugin-ci/` for this project. `https://oslandia.gitlab.io/qgis/oslandia/` for this plugin hosted on public GitLab instance. |
 | `repository_url_raw` | no | Base URL to the source code repository. | `https://raw.githubusercontent.com/qgis/qgis-plugin-ci` for a plugin hosted on Github; `https://gitlab.com/Oslandia/qgis/oslandia/-/raw/` for a plugin hosted on gitlab. |
 | `timezone` | no | The timezone for the plugin creation date. Defaults to: `UTC`. | `Europe/Paris` |
+| `skip_security_rules` | no | List of security rules to be skipped when uploading to plugins.qgis.org. | See [Skipping Security Rules](skip_security_rules.md)
 
 ----
 

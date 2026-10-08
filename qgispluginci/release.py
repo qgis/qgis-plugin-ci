@@ -517,7 +517,9 @@ def create_plugin_repo(
     return xml_repo
 
 
-def upload_plugin_to_osgeo_with_token(archive: str, package_name: str, token: str):
+def upload_plugin_to_osgeo_with_token(
+    archive: str, package_name: str, token: str, data: dict | None
+):
     """
     Upload the plugin to QGIS repository using a token and a POST request
 
@@ -539,7 +541,9 @@ def upload_plugin_to_osgeo_with_token(archive: str, package_name: str, token: st
     with open(archive, "rb") as file:
         try:
             logger.debug(f"Uploading the archive on {post_url}")
-            response = requests.post(post_url, files={"package": file}, headers=headers)
+            response = requests.post(
+                post_url, files={"package": file}, headers=headers, data=data
+            )
             response.raise_for_status()
             logger.debug(
                 f"Upload to QGIS main repository : response HTTP {response.status_code}"
@@ -779,6 +783,7 @@ def release(
             archive=archive_name,
             package_name=parameters.plugin_zip_directory,
             token=qgis_token,
+            data=parameters.skip_security_rules,
         )
 
     if osgeo_username is not None:

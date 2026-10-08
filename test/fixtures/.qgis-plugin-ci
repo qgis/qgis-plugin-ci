@@ -15,3 +15,6 @@ repository_plugin_id: plugins.qgis.org:99999
 repository_plugin_url: https://qgis.github.io/qgis-plugin-ci/
 
 #lrelease_path: /usr/local/opt/qt5/bin/lrelease
+skip_security_rules:
+  - B311
+  - KeywordDetector
