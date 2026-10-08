@@ -99,20 +99,6 @@ Render GeoJSON (server)
 :::
 
 :::{card}
-:link: https://github.com/3liz/lizmap-plugin/
-
-Lizmap
-^^^^^^
-
-* using a `setup.cfg` file
-* metadata populated automatically from CHANGELOG.md file
-* GitHub release created automatically from Travis
-* released on official repository
-* translations are committed from Travis to the repository after the release process
-* GitLab-CI with Docker is used as well
-:::
-
-:::{card}
 :link: https://github.com/opengisch/qgis_geomapfish_locator/
 
 GeoMapFish Locator
