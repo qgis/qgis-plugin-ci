@@ -444,7 +444,7 @@ def create_plugin_repo(
         "__ORG__": parameters.github_organization_slug,
         "__OSGEO_USERNAME__": osgeo_username or parameters.author,
         "__PLUGIN_NAME__": parameters.plugin_name,
-        "__PLUGINZIP__": archive,
+        "__PLUGINZIP__": Path(archive).name,
         "__RELEASE_DATE__": set_datetime_zoneinfo(
             input_datetime=datetime.now(timezone.utc),
             config_timezone=parameters.timezone,
