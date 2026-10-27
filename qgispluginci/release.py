@@ -162,9 +162,8 @@ def create_archive(
         )
 
     # replace any DEBUG=False in all Python files
-    if not is_prerelease:
-        for file in glob(f"{parameters.plugin_path}/**/*.py", recursive=True):
-            replace_in_file(file, r"^DEBUG\s*=\s*True", "DEBUG = False")
+    for file in glob(f"{parameters.plugin_path}/**/*.py", recursive=True):
+        replace_in_file(file, r"^DEBUG\s*=\s*True", "DEBUG = False")
 
     # keep track of current state
     try:
