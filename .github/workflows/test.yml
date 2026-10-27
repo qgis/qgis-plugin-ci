@@ -12,6 +12,11 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  HEAD_REPOSITORY: ${{ github.event.pull_request.head.repo.full_name }}
+
+permissions:
+  pull-requests: write
 
 jobs:
   tests:
@@ -43,9 +48,16 @@ jobs:
 
       - name: Tests
         env:
+          head_repository: ${{ env.HEAD_REPOSITORY }}
           tx_api_token: ${{ secrets.TRANSIFEX_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
         run: pytest
+
+      - uses: marocchino/sticky-pull-request-comment@v3.0.5
+        if: ${{ env.HEAD_REPOSITORY != 'qgis/qgis-plugin-ci' }}
+        with:
+          message: |
+            Be careful, tests using tokens are not running due to head repository not being qgis/qgis-plugin-ci !
 
       - name: Code Coverage Report
         uses: irongut/CodeCoverageSummary@v1.3.0
