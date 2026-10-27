@@ -539,9 +539,11 @@ def upload_plugin_to_osgeo_with_token(archive: str, package_name: str, token: st
     with open(archive, "rb") as file:
         try:
             logger.debug(f"Uploading the archive on {post_url}")
-            autoApprove = {"auto_approve_after_scan": "true"}
+            data = {
+                "auto_approve_after_scan": "true",
+            }
             response = requests.post(
-                post_url, files={"package": file}, data=autoApprove, headers=headers
+                post_url, files={"package": file}, data=data, headers=headers
             )
             response.raise_for_status()
             logger.debug(
