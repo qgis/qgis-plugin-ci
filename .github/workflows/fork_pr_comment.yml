@@ -1,0 +1,22 @@
+name: "💬 Fork PR comment"
+
+# pull_request_target runs in the context of the base repository, so it can comment on PRs from forks.
+# Do NOT check out or run any code from the pull request in this workflow.
+on:
+  pull_request_target:
+    branches:
+      - master
+
+permissions:
+  pull-requests: write
+
+jobs:
+  comment:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name != github.repository
+    steps:
+      - uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          header: fork-pr
+          message: |
+            This pull request comes from a fork: secrets are not available, so tests requiring GitHub or Transifex tokens are skipped and the coverage threshold is not enforced.

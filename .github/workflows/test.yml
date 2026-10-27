@@ -16,6 +16,9 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    env:
+      # Pull requests from forks and Dependabot get no secrets and a read-only GITHUB_TOKEN
+      HAS_SECRETS: ${{ github.repository == 'qgis/qgis-plugin-ci' && github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
     steps:
       # Not using strategy.matrix to create multiple jobs
       # as we do NOT want to test with any form of concurrency
@@ -52,7 +55,8 @@ jobs:
         with:
           filename: coverage.xml
           badge: true
-          fail_below_min: true
+          # tests requiring secrets are skipped otherwise
+          fail_below_min: ${{ env.HAS_SECRETS == 'true' }}
           format: markdown
           hide_branch_rate: false
           hide_complexity: true
@@ -62,7 +66,7 @@ jobs:
 
       - name: Add Coverage PR Comment
         uses: marocchino/sticky-pull-request-comment@v3
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' && env.HAS_SECRETS == 'true'
         with:
           recreate: true
           path: code-coverage-results.md

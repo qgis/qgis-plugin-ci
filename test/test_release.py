@@ -50,7 +50,7 @@ class TestRelease(unittest.TestCase):
         self.github_token = os.getenv("github_token")
         self.repo = None
         self.t = None
-        if self.github_token:
+        if not can_skip_test_github():
             print("init Github")
             self.repo = Github(self.github_token).get_repo("qgis/qgis-plugin-ci")
         self.clean_assets()

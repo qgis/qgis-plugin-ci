@@ -2,31 +2,18 @@ import os
 
 
 def can_skip_test_github():
-    """Check when the Transifex test can run."""
-    is_ci = os.getenv("CI") == "true"
-    is_dependabot = os.getenv("GITHUB_ACTOR") == "dependabot[bot]"
-    is_main_repo = os.getenv("GITHUB_REPOSITORY") == "qgis/qgis-plugin-ci"
+    """Check when the GitHub test can run."""
+    if os.getenv("CI") == "true":
+        # On CI, always run the test when secrets are available (see test workflow)
+        return os.getenv("HAS_SECRETS") != "true"
 
-    if is_ci and is_main_repo and not is_dependabot:
-        return False
-
-    if not os.getenv("github_token"):
-        return True
-
-    return False
+    return not os.getenv("github_token")
 
 
 def can_skip_test_transifex():
     """Check when the Transifex test can run."""
-    is_ci = os.getenv("CI") == "true"
-    is_main_repo = os.getenv("GITHUB_REPOSITORY") == "qgis/qgis-plugin-ci"
-    is_dependabot = os.getenv("GITHUB_ACTOR") == "dependabot[bot]"
+    if os.getenv("CI") == "true":
+        # On CI, always run the test when secrets are available (see test workflow)
+        return os.getenv("HAS_SECRETS") != "true"
 
-    if is_ci and is_main_repo and not is_dependabot:
-        # Always run the test on CI
-        return False
-
-    if not os.getenv("tx_api_token"):
-        return True
-
-    return False
+    return not os.getenv("tx_api_token")
