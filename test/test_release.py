@@ -357,6 +357,30 @@ class TestRelease(unittest.TestCase):
             finally:
                 os.chdir(original_dir)
 
+    def test_create_plugin_repo_nested_plugin_path(self):
+        """The archive is referenced by its file name when the plugin is not at the top level."""
+        params = self.qgis_plugin_config_params
+        archive_name = params.archive_name(
+            f"plugin/{params.plugin_path}", RELEASE_VERSION_TEST
+        )
+        zip_name = Path(archive_name).name
+        returned_path = create_plugin_repo(
+            parameters=params,
+            release_version=RELEASE_VERSION_TEST,
+            release_tag=RELEASE_VERSION_TEST,
+            archive=archive_name,
+            osgeo_username="",
+            plugin_repo_stylesheet=False,
+        )
+        content = Path(returned_path).read_text(encoding="utf-8")
+        self.assertIn(f"<file_name>{zip_name}</file_name>", content)
+        self.assertIn(
+            f"<download_url>https://github.com/{params.github_organization_slug}/"
+            f"{params.project_slug}/releases/download/{RELEASE_VERSION_TEST}/{zip_name}"
+            "</download_url>",
+            content,
+        )
+
     def test_package_plugin_repo_url_from_config(self):
         """Test plugin_repo_url from config repository_plugin_url."""
         self.assertEqual(
