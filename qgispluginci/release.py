@@ -540,7 +540,9 @@ def upload_plugin_to_osgeo_with_token(archive: str, package_name: str, token: st
         try:
             logger.debug(f"Uploading the archive on {post_url}")
             autoApprove = {"auto_approve_after_scan": "true"}
-            response = requests.post(post_url, files={"package": file}, data=autoApprove, headers=headers)
+            response = requests.post(
+                post_url, files={"package": file}, data=autoApprove, headers=headers
+            )
             response.raise_for_status()
             logger.debug(
                 f"Upload to QGIS main repository : response HTTP {response.status_code}"
