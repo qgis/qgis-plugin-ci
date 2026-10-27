@@ -32,6 +32,7 @@ configuration/plugin_path
 configuration/exclude
 configuration/submodules
 configuration/translation
+configuration/skip_security_rules
 ```
 
 ```{toctree}
