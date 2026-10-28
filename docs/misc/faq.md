@@ -20,5 +20,5 @@ It occurs for many reasons:
 
 QGIS-Plugin-CI can generate the `plugins.xml` file, per plugin.
 If you want to merge many XML files into one to have a single QGIS plugin repository providing many plugins,
-you should check [QGIS-Plugin-Repo](https://github.com/3liz/qgis-plugin-repo).
+you should check [QGIS-Plugin-Repo](https://github.com/3liz/qgis-plugin-repo) (currently archived by 3Liz).
 It's designed to run on CI after QGIS-Plugin-CI.
