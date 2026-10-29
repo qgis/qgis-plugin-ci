@@ -363,17 +363,20 @@ class Parameters:
         """
         )
 
-    @staticmethod
-    def archive_name(plugin_name: str, release_version: str) -> str:
+    def archive_name(self, release_version: str) -> str:
         """
-        Returns the archive file name
+        Returns the archive file name, next to the plugin sources, named after the plugin
+        directory in the archive: the QGIS plugin manager installs it there, after the file name
         """
         # zipname: use dot before version number
         # and not dash since it's causing issues #22
-        if "-" in plugin_name:
+        if "-" in self.plugin_zip_directory:
             logger.warning(DASH_WARNING)
 
-        return f"{plugin_name}.{release_version}.zip"
+        return str(
+            Path(self.plugin_path).parent
+            / f"{self.plugin_zip_directory}.{release_version}.zip"
+        )
 
     def collect_metadata(self) -> Callable[[str, Any | None], Any]:
         """

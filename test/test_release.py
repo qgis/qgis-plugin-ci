@@ -111,19 +111,42 @@ class TestRelease(unittest.TestCase):
         See #22 about dash
         and also capital letters
         """
+        params = self.qgis_plugin_config_params
         self.assertEqual(
-            "my_plugin.0.0.0.zip",
-            Parameters.archive_name("my_plugin", "0.0.0"),
+            "qgis_plugin_CI_testing.0.0.0.zip",
+            params.archive_name("0.0.0"),
         )
 
+        params.plugin_zip_directory = "my-plugin"
         with self.assertLogs(
             logger="qgispluginci.parameters", level="WARNING"
         ) as captured:
-            Parameters.archive_name("my-plugin", "0.0.0")
+            params.archive_name("0.0.0")
         self.assertEqual(
             len(captured.records), 1
         )  # check that there is only one log message
         self.assertEqual(captured.records[0].getMessage(), DASH_WARNING)
+
+    def test_archive_named_after_plugin_directory(self):
+        """The archive is named after the plugin directory in it, which QGIS installs it to."""
+        with Path("test/fixtures/.qgis-plugin-ci-test-changelog.yaml").open() as in_cfg:
+            arg_dict = yaml.safe_load(in_cfg)
+        arg_dict["use_project_slug_as_plugin_directory"] = True
+        parameters = Parameters(arg_dict)
+
+        archive_name = parameters.archive_name(RELEASE_VERSION_TEST)
+        self.assertEqual(
+            f"qgis_plugin_ci_testing.{RELEASE_VERSION_TEST}.zip", archive_name
+        )
+
+        release(
+            parameters=parameters,
+            release_version=RELEASE_VERSION_TEST,
+            allow_uncommitted_changes=True,
+        )
+        with ZipFile(archive_name, "r") as zip_file:
+            for name in zip_file.namelist():
+                self.assertTrue(name.startswith("qgis_plugin_ci_testing/"), name)
 
     @unittest.skipIf(can_skip_test_github(), "Missing github_token")
     def test_release_upload_github(self):
@@ -160,9 +183,7 @@ class TestRelease(unittest.TestCase):
 
         # compare archive file size
         gh_release = self.repo.get_release(id=RELEASE_VERSION_TEST)
-        archive_name = self.qgis_plugin_config_params.archive_name(
-            self.qgis_plugin_config_params.plugin_path, RELEASE_VERSION_TEST
-        )
+        archive_name = self.qgis_plugin_config_params.archive_name(RELEASE_VERSION_TEST)
         fs = os.path.getsize(archive_name)
         print("size: ", fs)
         self.assertGreater(fs, 0, "archive file size must be > 0")
@@ -187,9 +208,7 @@ class TestRelease(unittest.TestCase):
         self.assertIsInstance(parameters, Parameters)
 
         # get output zip path
-        archive_name = parameters.archive_name(
-            plugin_name=parameters.plugin_path, release_version=version_to_release
-        )
+        archive_name = parameters.archive_name(release_version=version_to_release)
 
         # extract last items from changelog
         parser = ChangelogParser()
@@ -288,9 +307,7 @@ class TestRelease(unittest.TestCase):
 
     def test_create_plugin_repo_with_stylesheet(self):
         """Stylesheet line must be present in the XML and the XSL file must be copied alongside."""
-        archive_name = self.qgis_plugin_config_params.archive_name(
-            self.qgis_plugin_config_params.plugin_path, RELEASE_VERSION_TEST
-        )
+        archive_name = self.qgis_plugin_config_params.archive_name(RELEASE_VERSION_TEST)
         original_dir = Path().cwd()
         with TemporaryDirectory() as tmp_dir:
             try:
@@ -321,9 +338,7 @@ class TestRelease(unittest.TestCase):
 
     def test_create_plugin_repo_disable_stylesheet(self):
         """No stylesheet line in the XML and no XSL file copied when disable_stylesheet=True."""
-        archive_name = self.qgis_plugin_config_params.archive_name(
-            self.qgis_plugin_config_params.plugin_path, RELEASE_VERSION_TEST
-        )
+        archive_name = self.qgis_plugin_config_params.archive_name(RELEASE_VERSION_TEST)
         original_dir = Path().cwd()
         with TemporaryDirectory() as tmp_dir:
             try:
@@ -355,9 +370,7 @@ class TestRelease(unittest.TestCase):
     def test_create_plugin_repo_nested_plugin_path(self):
         """The archive is referenced by its file name when the plugin is not at the top level."""
         params = self.qgis_plugin_config_params
-        archive_name = params.archive_name(
-            f"plugin/{params.plugin_path}", RELEASE_VERSION_TEST
-        )
+        archive_name = f"plugin/{params.archive_name(RELEASE_VERSION_TEST)}"
         zip_name = Path(archive_name).name
         returned_path = create_plugin_repo(
             parameters=params,
@@ -383,9 +396,7 @@ class TestRelease(unittest.TestCase):
             self.qgis_plugin_config_params.plugin_repo_url,
         )
 
-        archive_name = self.qgis_plugin_config_params.archive_name(
-            self.qgis_plugin_config_params.plugin_path, RELEASE_VERSION_TEST
-        )
+        archive_name = self.qgis_plugin_config_params.archive_name(RELEASE_VERSION_TEST)
         original_dir = Path().cwd()
         with TemporaryDirectory() as tmp_dir:
             try:
