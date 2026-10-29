@@ -712,7 +712,7 @@ def release(
         tr.pull()
         tr.compile_strings()
 
-    archive_name = parameters.archive_name(parameters.plugin_path, release_version)
+    archive_name = parameters.archive_name(release_version)
 
     # check if the GitHub release is a regular or pre-release
     is_prerelease = release_is_prerelease(
