@@ -70,14 +70,15 @@ See `parameters.py` for more parameters and details. Notice that the name of thi
 ## QRC and UI files
 
 - Any .qrc file in the source top directory (plugin_path) will be compiled and output as filename_rc.py. You can then import it using `import plugin_path.resources_rc`
+  This requires the optional PyQt dependencies: `pip install 'qgis-plugin-ci[pyqt]'`
 - Currently, qgis-plugin-ci does not compile any .ui file.
 
 ## Publishing plugins
 
 When releasing, you can publish the plugin :
 
-1. In the official QGIS plugin repository. You need to provide user name and password for your Osgeo account.
-2. As a custom repository in Github releases and which can be added later in QGIS. The address will be: <https://github.com/__ORG__/__REPO__/releases/latest/download/plugins.xml>
+1. In the official QGIS plugin repository. You need to provide user name and password for your Osgeo account or a QGIS token.
+2. As a custom repository in GitHub releases and which can be added later in QGIS. The address will be: <https://github.com/__ORG__/__REPO__/releases/latest/download/plugins.xml>
 
 Both can be achieved in the same process.
 

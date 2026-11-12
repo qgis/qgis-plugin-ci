@@ -22,6 +22,12 @@ Package is available on [PyPi](https://pypi.org/project/qgis-plugin-ci/):
 pip install qgis-plugin-ci
 ```
 
+Compiling `.qrc` resources and updating translations (`pylupdate5`) require the optional Qt dependencies (PyQt5):
+
+```bash
+pip install 'qgis-plugin-ci[pyqt]'
+```
+
 ```{toctree}
 ---
 caption: Configuration
