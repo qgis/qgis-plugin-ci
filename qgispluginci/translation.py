@@ -9,7 +9,6 @@ from qgispluginci.exceptions import (
 )
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation_clients.baseclient import TranslationConfig
-from qgispluginci.translation_clients.transifex import TransifexClient
 from qgispluginci.utils import touch_file
 
 
@@ -49,6 +48,14 @@ class Translation:
             resource_file_path=self.ts_file,
             resource_slug=self.parameters.transifex_resource,
         )
+        try:
+            from qgispluginci.translation_clients.transifex import TransifexClient
+        except ImportError as exc:
+            raise ImportError(
+                "The Transifex support is optional and its dependencies are not installed. "
+                "Install them with: pip install 'qgis-plugin-ci[transifex]'"
+            ) from exc
+
         self.tx_client = TransifexClient(tx_config, self.update_strings, create_project)
 
     def update_strings(self):

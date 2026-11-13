@@ -40,16 +40,20 @@ dependencies = [
     "pyyaml>=5.4,<6.1",
     "requests>=2.32.4",
     "six>=1.16.0",
-    "transifex-python>=3.2,<4.0",
     "tomli >= 2.2; python_full_version < '3.11'",
 ]
 
 [project.optional-dependencies]
+transifex = [
+    "transifex-python>=3.2,<4.0",
+]
+
 dev = [
     "pre-commit>=4.5,<5",
     "ruff>=0.15.11,<0.17",
     # testing: TODO: move into a separate test section
     "pytest-cov>=7.1.0,<8",
+    "qgis-plugin-ci[transifex]",
 ]
 
 doc = [

@@ -1,5 +1,11 @@
 # Using Transifex to translate your plugin
 
+Transifex support is optional. Install it with:
+
+```bash
+pip install 'qgis-plugin-ci[transifex]'
+```
+
 ```yaml
 jobs:
   include:

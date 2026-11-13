@@ -22,6 +22,13 @@ Package is available on [PyPi](https://pypi.org/project/qgis-plugin-ci/):
 pip install qgis-plugin-ci
 ```
 
+To use [Transifex](https://www.transifex.com/) for translations (`push-translation`, `pull-translation` or `release --transifex-token`),
+install the optional dependencies:
+
+```bash
+pip install 'qgis-plugin-ci[transifex]'
+```
+
 ```{toctree}
 ---
 caption: Configuration
