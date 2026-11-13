@@ -14,17 +14,12 @@ import logging
 import os
 import re
 import sys
+import tomllib
 from argparse import Namespace
 from collections.abc import Callable, Iterator
 from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
-
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
 
 import yaml
 
