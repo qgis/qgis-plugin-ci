@@ -197,15 +197,22 @@ def create_archive(
                         continue
                     tt.add(m.name)
 
-    # add LICENSE if not already in plugin path but available in its parent
-    parent_folder_license_copied = False
-    if not Path(f"{parameters.plugin_path}/LICENSE").is_file():
-        parent_license = Path(f"{parameters.plugin_path}/../LICENSE")
-        if parent_license.is_file():
-            shutil.copy(parent_license, f"{parameters.plugin_path}/LICENSE")
-            parent_folder_license_copied = True
-            with tarfile.open(top_tar_file, mode="a") as tt:
-                tt.add(f"{parameters.plugin_path}/LICENSE")
+    # Add some parent files if not already in plugin path but available in its parent
+    parent_files_copied = {
+        "LICENSE": False,
+        ".bandit": False,
+        ".secrets.baseline": False,
+        ".flake8": False,
+    }
+    for parent_file in parent_files_copied.keys():
+        if not Path(f"{parameters.plugin_path}/{parent_file}").is_file():
+            parent_file_path = Path(f"{parameters.plugin_path}/../{parent_file}")
+            if parent_file_path.is_file():
+                logger.debug(f"  adding parent file in the package: {parent_file}")
+                shutil.copy(parent_file_path, f"{parameters.plugin_path}/{parent_file}")
+                parent_files_copied[parent_file] = True
+                with tarfile.open(top_tar_file, mode="a") as tt:
+                    tt.add(f"{parameters.plugin_path}/{parent_file}")
 
     # add translation files
     if add_translations:
@@ -279,8 +286,9 @@ def create_archive(
                 info.compress_type = zf.compression
                 zf.writestr(info, fl)
 
-    if parent_folder_license_copied:
-        Path(f"{parameters.plugin_path}/LICENSE").unlink()
+    for parent_file, copied in parent_files_copied.items():
+        if copied:
+            Path(f"{parameters.plugin_path}/{parent_file}").unlink()
 
     logger.debug("-" * 40)
     logger.debug(f"Files in ZIP archive ({archive_name}):")

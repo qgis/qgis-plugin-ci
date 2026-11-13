@@ -230,6 +230,59 @@ class TestRelease(unittest.TestCase):
         # Commit sha1 not in the metadata.txt
         self.assertEqual(0, len(re.findall(r"commitSha1=\d+", str(data))))
 
+    def test_release_parent_files(self):
+        """Test copy some files from parent folder."""
+        version_to_release = "0.1.2"
+        parameters = self.qgis_plugin_config_params
+        plugin_path = Path(parameters.plugin_path)
+        parent_path = plugin_path.parent
+
+        # LICENSE already exists in the parent folder (repository root)
+        parent_files = {
+            ".bandit": "[bandit]\nskips = B101\n",
+            ".secrets.baseline": '{"version": "1.0.0"}\n',
+            ".flake8": "[flake8]\nmax-line-length = 88\n",
+        }
+        for name in parent_files:
+            self.assertFalse(
+                (parent_path / name).exists(),
+                f"{name} must not exist in {parent_path} before running this test",
+            )
+            self.assertFalse((plugin_path / name).exists())
+        self.assertFalse((plugin_path / "LICENSE").exists())
+
+        try:
+            for name, content in parent_files.items():
+                (parent_path / name).write_text(content)
+
+            release(
+                parameters=parameters,
+                release_version=version_to_release,
+                allow_uncommitted_changes=True,
+            )
+
+            archive_name = parameters.archive_name(
+                plugin_name=parameters.plugin_path, release_version=version_to_release
+            )
+            with ZipFile(archive_name, "r") as zip_file:
+                for name, content in parent_files.items():
+                    self.assertEqual(
+                        zip_file.read(f"{parameters.plugin_path}/{name}").decode(),
+                        content,
+                    )
+                license_data = zip_file.read(f"{parameters.plugin_path}/LICENSE")
+            self.assertIn(b"GNU GENERAL PUBLIC LICENSE", license_data)
+
+            # Files copied temporarily in the plugin folder must have been removed
+            for name in [*parent_files, "LICENSE"]:
+                self.assertFalse(
+                    (plugin_path / name).exists(),
+                    f"{name} has not been removed from {plugin_path}",
+                )
+        finally:
+            for name in parent_files:
+                (parent_path / name).unlink(missing_ok=True)
+
     def test_release_version_valid_invalid(self):
         valid_tags = [
             "v1.1.1",
