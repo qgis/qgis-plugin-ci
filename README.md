@@ -69,7 +69,11 @@ See `parameters.py` for more parameters and details. Notice that the name of thi
 
 ## QRC and UI files
 
-- Any .qrc file in the source top directory (plugin_path) will be compiled and output as filename_rc.py. You can then import it using `import plugin_path.resources_rc`
+- **Deprecated:** any `.qrc` file in the source top directory (plugin_path) will be compiled and output as `filename_rc.py`.
+  You can then import it using `import plugin_path.resources_rc`.
+  This feature will be removed in a future version.
+  Instead, reference your resources by their file path, for instance `QIcon(str(Path(__file__).parent / "icons" / "icon.svg"))`
+  instead of `QIcon(":/plugins/my_plugin/icons/icon.svg")`.
 - Currently, qgis-plugin-ci does not compile any .ui file.
 
 ## Publishing plugins

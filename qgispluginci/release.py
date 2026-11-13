@@ -219,6 +219,11 @@ def create_archive(
 
     # compile qrc files
     if list(Path(parameters.plugin_path).glob("*.qrc")):
+        logger.warning(
+            "DEPRECATED: compiling QRC files is deprecated and will be removed "
+            "in a future version. Reference your resources by their file path instead, "
+            "e.g. QIcon(str(Path(__file__).parent / 'icons' / 'icon.svg'))."
+        )
         pyqt5ac.main(
             ioPaths=[
                 [
