@@ -11,7 +11,7 @@ import sys
 import tarfile
 import xmlrpc.client
 import zipfile
-from datetime import date, datetime, timezone
+from datetime import datetime, timezone
 from glob import glob
 from pathlib import Path
 from tempfile import mkstemp
@@ -19,14 +19,12 @@ from typing import TYPE_CHECKING
 
 # 3rd party
 import git
-import pyqt5ac
 import requests
 from github import Github, GithubException
 
 from qgispluginci import __package_name__, __version__
 from qgispluginci.changelog import ChangelogParser
 from qgispluginci.exceptions import (
-    BuiltResourceInSources,
     GithubReleaseCouldNotUploadAsset,
     GithubReleaseNotFound,
     UncommitedChanges,
@@ -218,30 +216,15 @@ def create_archive(
 
     # compile qrc files
     if list(Path(parameters.plugin_path).glob("*.qrc")):
-        pyqt5ac.main(
-            ioPaths=[
-                [
-                    f"{parameters.plugin_path}/*.qrc",
-                    f"{parameters.plugin_path}/%%FILENAME%%_rc.py",
-                ]
-            ]
+        # It should be a warning, but maybe the user has compiled version already
+        # TODO, to be removed in a few months
+        logger.info(
+            "REMOVED: Compiling QRC files has been removed from QGIS-Plugin-CI version 3. "
+            "You can call your resources by their file path instead, "
+            "e.g. QIcon(str(Path(__file__).parent / 'icons' / 'icon.svg')), "
+            "or if you really need a QRC file, you must compile it yourself and include it in the git project. "
         )
-        for file in glob(f"{parameters.plugin_path}/*_rc.py"):
-            with tarfile.open(top_tar_file, mode="r:") as tt:
-                for n in tt.getnames():
-                    if n == file:
-                        err_msg = (
-                            f"The file {file} is present in the sources and its name "
-                            "conflicts with a just built resource. "
-                            "You might want to remove it from the sources or "
-                            "setting export-ignore in .gitattributes config file."
-                        )
-                        logger.error(err_msg, exc_info=BuiltResourceInSources())
-                        sys.exit(1)
-            with tarfile.open(top_tar_file, mode="a") as tt:
-                logger.debug(f"\tAdding resource: {file}")
-                # https://stackoverflow.com/a/48462950/1548052
-                tt.add(file)
+
     # Add assets
     if asset_paths:
         with tarfile.open(top_tar_file, mode="a") as tt:
