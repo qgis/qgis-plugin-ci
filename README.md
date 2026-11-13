@@ -67,11 +67,6 @@ commands:
 
 See `parameters.py` for more parameters and details. Notice that the name of this directory will be used for the zip file.
 
-## QRC and UI files
-
-- Any .qrc file in the source top directory (plugin_path) will be compiled and output as filename_rc.py. You can then import it using `import plugin_path.resources_rc`
-- Currently, qgis-plugin-ci does not compile any .ui file.
-
 ## Publishing plugins
 
 When releasing, you can publish the plugin :

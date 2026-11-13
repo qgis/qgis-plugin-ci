@@ -1,7 +1,3 @@
-class BuiltResourceInSources(Exception):
-    pass
-
-
 class ConfigurationNotFound(Exception):
     pass
 
