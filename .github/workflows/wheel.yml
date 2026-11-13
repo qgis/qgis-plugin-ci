@@ -10,6 +10,8 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  PYTHON_VERSION: 3.14
 
 jobs:
   tests:
@@ -21,7 +23,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.12"
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
           cache-dependency-path: pyproject.toml
 
