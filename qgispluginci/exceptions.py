@@ -2,6 +2,10 @@ class BuiltResourceInSources(Exception):
     pass
 
 
+class CompilingResourcesFailed(Exception):
+    pass
+
+
 class ConfigurationNotFound(Exception):
     pass
 

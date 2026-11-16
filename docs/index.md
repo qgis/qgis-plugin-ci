@@ -29,13 +29,16 @@ install the optional dependencies:
 pip install 'qgis-plugin-ci[transifex]'
 ```
 
-PyQt is optional too. It is needed to compile `.qrc` resources files (with `pyqt5ac`)
-and to extract strings to translate (with `pylupdate5`). It is included in the `transifex` extra,
-otherwise install it with:
+PyQt is optional too. It is needed to extract strings to translate (with `pylupdate`).
+It is included in the `transifex` extra, otherwise install it with:
 
 ```bash
 pip install 'qgis-plugin-ci[pyqt]'
 ```
+
+Compiling `.qrc` resources files requires `rcc`, which is provided by Qt and not by pip
+(for instance with the `qt6-base-dev-tools` package on Debian/Ubuntu).
+If needed, set its path with `rcc_path` in the configuration.
 
 ```{toctree}
 ---

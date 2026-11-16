@@ -14,4 +14,4 @@ repository_url: https://github.com/qgis/qgis-plugin-ci/
 repository_plugin_id: plugins.qgis.org:99999
 repository_plugin_url: https://qgis.github.io/qgis-plugin-ci/
 
-#lrelease_path: /usr/local/opt/qt5/bin/lrelease
+#lrelease_path: /usr/lib/qt6/bin/lrelease

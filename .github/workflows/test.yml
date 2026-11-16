@@ -50,7 +50,15 @@ jobs:
       - name: Install system requirements
         run: |
           sudo apt-get update
-          sudo apt-get install qtbase5-dev qttools5-dev-tools
+          sudo apt-get install qt6-base-dev-tools qt6-l10n-tools
+          # rcc and lrelease are not in the PATH with Qt6 packages
+          echo "/usr/lib/qt6/libexec" >> "$GITHUB_PATH"
+          echo "/usr/lib/qt6/bin" >> "$GITHUB_PATH"
+
+      - name: Check Qt tools
+        run: |
+          rcc --version
+          lrelease -version
 
       - name: Tests
         env:

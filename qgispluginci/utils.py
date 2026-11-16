@@ -58,17 +58,6 @@ def convert_octets(octets: int) -> str:
     return f"{s} {size_name[i]}"
 
 
-def touch_file(path: str, update_time: bool = False, create_dir: bool = True):
-    basedir = os.path.dirname(path)
-    if create_dir and not os.path.exists(basedir):
-        os.makedirs(basedir)
-    with open(path, "a"):
-        if update_time:
-            os.utime(path, None)
-        else:
-            pass
-
-
 def parse_tag(version_tag: str) -> VersionNote | None:
     """Parse a tag and determine the semantic version."""
     components = version_tag.split("-")

@@ -6,7 +6,8 @@ Install [development dependencies](./environment.md) and run tests to check that
 
 ```bash
 sudo apt-get update
-sudo apt-get install qt5-default qttools5-dev-tools
+sudo apt-get install qt6-base-dev-tools # RCC command
+sudo apt-get install qt6-l10n-tools # lrelease command
 ```
 
 ## Environment variables

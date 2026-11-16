@@ -14,4 +14,4 @@ translation_languages:
   - fr
   - it
 
-#lrelease_path: /usr/local/opt/qt5/bin/lrelease
+#lrelease_path: /usr/lib/qt6/bin/lrelease

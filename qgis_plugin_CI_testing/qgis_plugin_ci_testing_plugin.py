@@ -19,8 +19,8 @@
 
 import os
 
-from qgis.PyQt.QtCore import QCoreApplication, QLocale, QSettings, QTranslator
 from qgis.gui import QgisInterface
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QSettings, QTranslator
 
 
 DEBUG = False
@@ -37,7 +37,11 @@ class QgisPluginCiTesting:
         self.translator.load(qgis_locale, "swiss_locator", "_", locale_path)
         QCoreApplication.installTranslator(self.translator)
 
-        self.trUtf8("some UTF-8 translation: un épilogue où l'on marche sur des œufs")
+        self.tr("some UTF-8 translation: un épilogue où l'on marche sur des œufs")
+
+    def tr(self, message: str) -> str:
+        """Translate a string, using the class name as context."""
+        return QCoreApplication.translate(self.__class__.__name__, message)
 
     def initGui(self):
         pass

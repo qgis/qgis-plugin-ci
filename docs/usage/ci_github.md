@@ -27,7 +27,13 @@ jobs:
        # - name: Install Qt lrelease
        #   run: |
        #    sudo apt-get update
-       #    sudo apt-get install qt5-make qttools5-dev-tools
+       #    sudo apt-get install qt6-l10n-tools
+
+       # Needed if the plugin is using QRC, to have the rcc command
+       # - name: Install Qt RCC
+       #   run: |
+       #    sudo apt-get update
+       #    sudo apt-get install qt6-base-dev-tools
 
       - name: Install qgis-plugin-ci
         run: pip3 install qgis-plugin-ci

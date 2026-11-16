@@ -9,7 +9,6 @@ from qgispluginci.exceptions import (
 )
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation_clients.baseclient import TranslationConfig
-from qgispluginci.utils import touch_file
 
 
 # GLOBALS
@@ -60,55 +59,35 @@ class Translation:
 
     def update_strings(self):
         """
-        Update TS files from plugin source strings
+        Update TS files from plugin source strings.
+
+        The plugin folder is given to pylupdate, which reads all .py and .ui files in it.
         """
-        source_py_files = []
-        source_ui_files = []
-        relative_path = f"./{self.parameters.plugin_path}"
-        for ext in ("py", "ui"):
-            for file in glob.glob(
-                f"{self.parameters.plugin_path}/**/*.{ext}",
-                recursive=True,
-            ):
-                file_path = str(Path(file).relative_to(relative_path))
-                if ext == "py":
-                    source_py_files.append(file_path)
-                else:
-                    source_ui_files.append(file_path)
+        # pylupdate6 creates the TS file, but refuses an existing empty one
+        ts_file = Path(self.ts_file)
+        ts_file.parent.mkdir(parents=True, exist_ok=True)
+        if ts_file.is_file() and ts_file.stat().st_size == 0:
+            ts_file.unlink()
 
-        touch_file(self.ts_file)
-
-        project_file = Path(self.parameters.plugin_path).joinpath(
-            self.parameters.plugin_name + ".pro"
-        )
-
-        with open(project_file, "w") as f:
-            source_py_files = " ".join(source_py_files)
-            source_ui_files = " ".join(source_ui_files)
-            assert f.write("CODECFORTR = UTF-8\n")
-            assert f.write(f"SOURCES = {source_py_files}\n")
-            assert f.write(f"FORMS = {source_ui_files}\n")
-            assert f.write(
-                f"TRANSLATIONS = {Path(self.ts_file).relative_to(relative_path)}\n"
-            )
-            f.flush()
-            f.close()
-
-        cmd = [self.parameters.pylupdate5_path, "-noobsolete", str(project_file)]
+        cmd = [
+            self.parameters.pylupdate_path,
+            "--no-obsolete",
+            "--ts",
+            self.ts_file,
+            self.parameters.plugin_path,
+        ]
 
         try:
             output = subprocess.run(cmd, capture_output=True, text=True)
         except FileNotFoundError:
             logger.error(
-                f"'{self.parameters.pylupdate5_path}' executable not found. "
+                f"'{self.parameters.pylupdate_path}' executable not found. "
                 "It is provided by PyQt, install it with: "
                 "pip install 'qgis-plugin-ci[pyqt]' "
-                "or set 'pylupdate5_path' in the configuration.",
+                "or set 'pylupdate_path' in the configuration.",
                 exc_info=TranslationFailed(),
             )
             sys.exit(1)
-        finally:
-            project_file.unlink()
 
         output_ts_file = Path(self.ts_file)
         ts_file_contents = output_ts_file.read_text()
@@ -125,7 +104,7 @@ class Translation:
             )
             sys.exit(1)
         else:
-            logger.info(f"Successfully run pylupdate5: {output.stdout}")
+            logger.info(f"Successfully run pylupdate: {output.stdout}")
 
     def compile_strings(self):
         """
