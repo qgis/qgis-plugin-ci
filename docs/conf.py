@@ -6,15 +6,11 @@ Configuration for project documentation using Sphinx.
 
 # standard
 import sys
+import tomllib
 from datetime import date, datetime
 from importlib.metadata import version
 from os import environ, path
 
-
-if sys.version_info >= (3, 11):
-    import tomllib
-else:
-    import tomli as tomllib
 
 __version__ = version("qgis-plugin-ci")
 
