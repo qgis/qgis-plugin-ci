@@ -6,7 +6,15 @@
 
 > Generated with [pipdeptree](https://pypi.org/project/pipdeptree/).
 
-```{include} _dependencies.md
+**QGIS-Plugin-CI with core dependencies only**
+
+```{include} _core_dependencies.md
+
+```
+
+**QGIS-Plugin-CI with all extra dependencies**
+
+```{include} _all_dependencies.md
 
 ```
 

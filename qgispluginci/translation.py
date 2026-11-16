@@ -96,9 +96,19 @@ class Translation:
 
         cmd = [self.parameters.pylupdate5_path, "-noobsolete", str(project_file)]
 
-        output = subprocess.run(cmd, capture_output=True, text=True)
-
-        project_file.unlink()
+        try:
+            output = subprocess.run(cmd, capture_output=True, text=True)
+        except FileNotFoundError:
+            logger.error(
+                f"'{self.parameters.pylupdate5_path}' executable not found. "
+                "It is provided by PyQt, install it with: "
+                "pip install 'qgis-plugin-ci[pyqt]' "
+                "or set 'pylupdate5_path' in the configuration.",
+                exc_info=TranslationFailed(),
+            )
+            sys.exit(1)
+        finally:
+            project_file.unlink()
 
         output_ts_file = Path(self.ts_file)
         ts_file_contents = output_ts_file.read_text()

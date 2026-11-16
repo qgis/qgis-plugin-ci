@@ -6,6 +6,9 @@ Transifex support is optional. Install it with:
 pip install 'qgis-plugin-ci[transifex]'
 ```
 
+This also installs PyQt, which provides `pylupdate5`, used to extract the strings to translate.
+If needed, set its path with `pylupdate5_path` in the configuration.
+
 ```yaml
 jobs:
   include:
