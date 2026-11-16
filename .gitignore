@@ -32,5 +32,6 @@ junit
 coverage.xml
 plugins.xml
 plugins.xsl
-docs/misc/_dependencies.md
+docs/misc/_core_dependencies.md
+docs/misc/_all_dependencies.md
 docs/misc/_licenses.md

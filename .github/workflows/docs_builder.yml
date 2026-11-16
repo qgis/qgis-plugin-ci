@@ -51,12 +51,24 @@ jobs:
     - name: Install project as a package
       run: python -m pip install -e .
 
-    - name: Generates dependencies graph page with pipdetree
+    - name: Install pipdeptree
       run: |
         python -m pip install pipdeptree
-        echo -e "\`\`\`{mermaid}" > docs/misc/_dependencies.md
-        pipdeptree --exclude pip,pipdeptree,setuptools,wheel --extras -o mermaid >> docs/misc/_dependencies.md
-        echo -e "\`\`\`" >> docs/misc/_dependencies.md
+
+    - name: Generates dependencies graph page with pipdetree with core dependencies only
+      run: |
+        echo -e "\`\`\`{mermaid}" > docs/misc/_core_dependencies.md
+        pipdeptree --exclude pip,pipdeptree,setuptools,wheel --extras -o mermaid >> docs/misc/_core_dependencies.md
+        echo -e "\`\`\`" >> docs/misc/_core_dependencies.md
+
+    - name: Install project as a package with all dependencies (Transifex includes PyQt)
+      run: python -m pip install -e .[transifex]
+
+    - name: Generates dependencies graph page with pipdetree with all dependencies
+      run: |
+        echo -e "\`\`\`{mermaid}" > docs/misc/_all_dependencies.md
+        pipdeptree --exclude pip,pipdeptree,setuptools,wheel --extras -o mermaid >> docs/misc/_all_dependencies.md
+        echo -e "\`\`\`" >> docs/misc/_all_dependencies.md
 
     # this job must run before installing other dependencies to avoid listing everything
     - name: Generates licenses page with pip-licences
