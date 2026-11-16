@@ -71,5 +71,4 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v3
         if: github.event_name == 'pull_request' && env.HAS_SECRETS == 'true'
         with:
-          recreate: true
           path: code-coverage-results.md
