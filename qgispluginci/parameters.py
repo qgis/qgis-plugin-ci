@@ -376,12 +376,14 @@ class Parameters:
         value after the other while also iterating over the file once.
         """
         metadata_file = f"{self.plugin_path}/metadata.txt"
-        metadata = {}
-        with open(metadata_file) as fh:
-            for line in fh:
-                split = line.strip().split("=", 1)
-                if len(split) == 2:
-                    metadata[split[0]] = split[1]
+        config = configparser.ConfigParser()
+        config.read(metadata_file)
+
+        metadata = {
+            key: value
+            for section in config.sections()
+            for key, value in config.items(section)
+        }
 
         def get_metadata(key: str, default_value: Any | None = None) -> Any:
             if not self.plugin_path:
