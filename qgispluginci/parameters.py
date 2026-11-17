@@ -374,14 +374,34 @@ class Parameters:
         """
         Returns a closure capturing a Dict of metadata, allowing to retrieve one
         value after the other while also iterating over the file once.
+
+        As for configparser, a value continues on the lines indented deeper than
+        its key. Unlike configparser, lines starting with '#' or ';' are kept in
+        such a value, so that e.g. issue references in a changelog are not lost.
         """
         metadata_file = f"{self.plugin_path}/metadata.txt"
         metadata = {}
+        key = None
+        key_indent = 0
         with open(metadata_file) as fh:
             for line in fh:
-                split = line.strip().split("=", 1)
-                if len(split) == 2:
-                    metadata[split[0]] = split[1]
+                stripped = line.strip()
+                indent = len(line) - len(line.lstrip())
+                if key is not None and (not stripped or indent > key_indent):
+                    # continuation of a multi-line value
+                    metadata[key] += f"\n{stripped}"
+                elif not stripped or stripped.startswith(("#", ";")):
+                    # comment
+                    continue
+                elif "=" in stripped and not stripped.startswith("["):
+                    key, value = stripped.split("=", 1)
+                    key = key.strip()
+                    metadata[key] = value.strip()
+                    key_indent = indent
+                else:
+                    # section header
+                    key = None
+        metadata = {key: value.strip() for key, value in metadata.items()}
 
         def get_metadata(key: str, default_value: Any | None = None) -> Any:
             if not self.plugin_path:
