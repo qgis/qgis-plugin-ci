@@ -1,7 +1,5 @@
 name: 🧪 Run tests
 
-concurrency: testing_environment
-
 on:
   pull_request:
     branches:
@@ -24,9 +22,17 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    # Tests with secrets share a Transifex project and a GitHub release, so they run one at a time.
+    # A concurrency group holds a single pending run, cancelled by the next one queued:
+    # runs without secrets get their own group so they never take that slot.
+    # The condition must match HAS_SECRETS below.
+    concurrency:
+      group: ${{ (github.repository == 'qgis/qgis-plugin-ci' && github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && !startsWith(github.ref, 'refs/tags/')) && 'testing_environment' || format('tests-{0}', github.run_id) }}
     env:
-      # Pull requests from forks and Dependabot get no secrets and a read-only GITHUB_TOKEN
-      HAS_SECRETS: ${{ github.repository == 'qgis/qgis-plugin-ci' && github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+      # Pull requests from forks and Dependabot get no secrets and a read-only GITHUB_TOKEN.
+      # Releases (tags, see release.yml) skip these tests: they ran when the tagged commit landed
+      # on its branch, and waiting for the shared environment could get the release cancelled.
+      HAS_SECRETS: ${{ github.repository == 'qgis/qgis-plugin-ci' && github.actor != 'dependabot[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && !startsWith(github.ref, 'refs/tags/') }}
     steps:
       # Not using strategy.matrix to create multiple jobs
       # as we do NOT want to test with any form of concurrency
