@@ -19,7 +19,6 @@ from typing import TYPE_CHECKING
 
 # 3rd party
 import git
-import pyqt5ac
 import requests
 from github import Github, GithubException
 
@@ -218,6 +217,13 @@ def create_archive(
 
     # compile qrc files
     if list(Path(parameters.plugin_path).glob("*.qrc")):
+        try:
+            import pyqt5ac
+        except ImportError as exc:
+            raise ImportError(
+                "Compiling .qrc resources requires PyQt, which is optional and not installed. "
+                "Install it with: pip install 'qgis-plugin-ci[pyqt]'"
+            ) from exc
         pyqt5ac.main(
             ioPaths=[
                 [

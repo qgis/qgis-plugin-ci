@@ -11,7 +11,8 @@ authors = [
     {name = "Julien Moura", email = "dev@ingeoveritas.com"},
 ]
 description = "Let qgis-plugin-ci package and release your QGIS plugins for you. Have a tea or go hiking meanwhile. Contains scripts to perform automated testing and deployment for QGIS plugins. These scripts are written for and tested on GitHub Actions, GitLab CI, Travis-CI, and Transifex."
-requires-python = ">=3.10"
+# Changing PYTHON minimum version should match the one in pre-commit and in .github/workflows/release.yml
+requires-python = ">=3.11"
 keywords = ["QGIS", "CI", "changelog", "plugin"]
 license = {text = "GPLv3"}
 classifiers = [
@@ -22,11 +23,11 @@ classifiers = [
         "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
         "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering :: GIS",
 ]
@@ -34,22 +35,32 @@ classifiers = [
 dependencies = [
     "GitPython>=3.1,<3.3",
     "PyGithub>=2.9.1,<2.11",
-    "PyQt5>=5.15,<5.16",
-    "pyqt5ac>=1.2,<1.3",
     "python-slugify>=4.0,<9.2",
     "pyyaml>=5.4,<6.1",
     "requests>=2.32.4",
     "six>=1.16.0",
-    "transifex-python>=3.2,<4.0",
     "tomli >= 2.2; python_full_version < '3.11'",
 ]
 
 [project.optional-dependencies]
+# PyQt5 provides pylupdate5 (translations) and pyqt5ac (compiling .qrc resources)
+pyqt = [
+    "PyQt5>=5.15,<5.16",
+    "pyqt5ac>=1.2,<1.3",
+]
+
+transifex = [
+    "transifex-python>=3.2,<4.0",
+    # pylupdate5, needed to extract strings
+    "qgis-plugin-ci[pyqt]",
+]
+
 dev = [
     "pre-commit>=4.5,<5",
     "ruff>=0.15.11,<0.17",
     # testing: TODO: move into a separate test section
     "pytest-cov>=7.1.0,<8",
+    "qgis-plugin-ci[transifex]",
 ]
 
 doc = [
