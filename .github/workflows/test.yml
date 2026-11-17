@@ -10,11 +10,16 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      python_version:
+        description: 'Python version, like 3.15, 3.14'
+        type: string
+        default: 3.15
   workflow_call:
 
 env:
   # Changing PYTHON minimum version should match the one in pyproject.toml and in pre-commit
-  PYTHON_VERSION: 3.11
+  PYTHON_VERSION: "3.11"
 
 jobs:
   tests:
@@ -32,7 +37,7 @@ jobs:
 
       - uses: actions/setup-python@v7
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          python-version: ${{ inputs.python_version || env.PYTHON_VERSION }}
           cache: "pip"
           cache-dependency-path: pyproject.toml
 
