@@ -642,6 +642,7 @@ def release(
     release_version: str,
     release_tag: str | None = None,
     github_token: str | None = None,
+    compile_all_ts_files: bool = False,
     upload_plugin_repo_github: bool = False,
     tx_api_token: str | None = None,
     alternative_repo_url: str | None = None,
@@ -667,6 +668,8 @@ def release(
         If not given, the release version will be used
     github_token
         The GitHub token
+    compile_all_ts_files:
+        If true, compile all TS files into QM files. It's done by default if a Transifex token is provided
     upload_plugin_repo_github
         If true, a custom repo will be created as a release asset on Github and could later be used in QGIS as a custom plugin repository.
     plugin_repo_url
@@ -703,9 +706,10 @@ def release(
 
     release_tag = release_tag or release_version
 
-    if tx_api_token:
-        tr = Translation(parameters, create_project=False, tx_api_token=tx_api_token)
-        tr.pull()
+    if tx_api_token or compile_all_ts_files:
+        tr = Translation(parameters, tx_create_project=False, tx_api_token=tx_api_token)
+        if tx_api_token:
+            tr.pull()
         tr.compile_strings()
 
     archive_name = parameters.archive_name(parameters.plugin_path, release_version)

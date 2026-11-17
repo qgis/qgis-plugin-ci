@@ -1,5 +1,20 @@
 # Using Transifex to translate your plugin
 
+## Configuration
+
+```toml
+translation_languages = [
+    "my_MM",
+    "zh",
+]
+```
+
+## Local TS files
+
+
+
+## Transifex
+
 Transifex support is optional. Install it with:
 
 ```bash
