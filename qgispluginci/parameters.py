@@ -377,6 +377,7 @@ class Parameters:
         """
         metadata_file = f"{self.plugin_path}/metadata.txt"
         config = configparser.ConfigParser()
+        config.optionxform = str
         config.read(metadata_file)
 
         metadata = {
