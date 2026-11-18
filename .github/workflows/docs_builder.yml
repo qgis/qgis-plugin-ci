@@ -2,7 +2,7 @@ name: "📚 Documentation Builder"
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths:
       - 'docs/**/*'
       - '.github/workflows/docs_builder.yml'
@@ -12,7 +12,7 @@ on:
       - "*"
 
   pull_request:
-    branches: [master]
+    branches: [main]
     paths:
       - ".github/workflows/docs_builder.yml"
       - docs/**/*

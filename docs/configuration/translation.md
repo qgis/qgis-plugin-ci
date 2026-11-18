@@ -13,7 +13,7 @@ If needed, set its path with `pylupdate5_path` in the configuration.
 jobs:
   include:
     - stage: push-translation
-      if: branch = master
+      if: branch = main
       script: qgis-plugin-ci push-translation ${TX_TOKEN}
 
     - stage: deploy
