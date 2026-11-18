@@ -5,10 +5,10 @@ concurrency: testing_environment
 on:
   pull_request:
     branches:
-      - master
+      - main
   push:
     branches:
-      - master
+      - main
   workflow_dispatch:
     inputs:
       python_version:

@@ -5,7 +5,7 @@ name: "💬 Fork PR comment"
 on:
   pull_request_target:
     branches:
-      - master
+      - main
 
 permissions:
   pull-requests: write
