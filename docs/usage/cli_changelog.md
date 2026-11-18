@@ -28,7 +28,7 @@ changelog_path=subfolder/CHANGELOG.md
 
 ## Requirements
 
-The `CHANGELOG.md` file must follow the convention [Keep A Changelog](https://keepachangelog.com/). For example, see this [repository changelog](https://github.com/qgis/qgis-plugin-ci/blob/master/CHANGELOG.md).
+The `CHANGELOG.md` file must follow the convention [Keep A Changelog](https://keepachangelog.com/). For example, see this [repository changelog](https://github.com/qgis/qgis-plugin-ci/blob/main/CHANGELOG.md).
 
 :::{warning}
 Currently the "Unreleased" section and subsections (e.g. "Fixed" etc) are not supported, see [#56](https://github.com/qgis/qgis-plugin-ci/issues/56).
