@@ -68,8 +68,9 @@ class Parameters:
         The project on Transifex, which can be different from the one on GitHub.
         Defaults to: the project_slug
 
-    transifex_resource: str
-        The resource name in transifex
+    i18n_resource_name: str
+        The resource name: used for the TS files names (``<i18n_resource_name>_<lang>.ts``)
+        It is also used in Transifex.
         Defaults to: the project_slug
 
     translation_source_language:
@@ -242,8 +243,8 @@ class Parameters:
         )
         self.translation_languages = definition.get("translation_languages", {})
         self.transifex_project = definition.get("transifex_project", self.project_slug)
-        self.transifex_resource = definition.get(
-            "transifex_resource", self.project_slug
+        self.i18n_resource_name = definition.get(
+            "i18n_resource_name", self.project_slug
         )
 
         self.timezone = definition.get("timezone", "UTC")

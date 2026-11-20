@@ -2,94 +2,118 @@
 
 # standard library
 import logging
-import os
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-
-# 3rd party
-import yaml
 
 # project
 from qgispluginci.parameters import Parameters
 from qgispluginci.translation import Translation
 
-# Tests
-from .utils import can_skip_test_transifex
-
 
 # Logging
 logger = logging.getLogger(__name__)
 
-# Ensuring proper ordering for tests sensitive to state
-# Note: no effect under pytest (which preserves declaration order natively)
-unittest.TestLoader.sortTestMethodsUsing = None
 
-
-@unittest.skipIf(can_skip_test_transifex(), "Missing tx_api_token")
-class TestTranslation(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        """Initialize the test case"""
-        with open(".qgis-plugin-ci") as f:
-            arg_dict = yaml.safe_load(f)
-        cls.parameters = Parameters(arg_dict)
-        cls.tx_api_token = os.getenv("tx_api_token")
-        assert cls.tx_api_token
+class TestLocalTranslation(unittest.TestCase):
+    """Translation with only local TS files."""
 
     def setUp(self):
-        """Initialize the next test method (run before every test method)"""
-        self.t = Translation(self.parameters, tx_api_token=self.tx_api_token)
+        self.parameters = Parameters.make_from(
+            path_to_config_file=Path("test/fixtures/.qgis-plugin-ci")
+        )
 
-    def tearDown(self):
-        self.t.tx_client.delete_project()
-        """
-        try:
-            self.t.tx_client.delete_team(f"{self.parameters.project_slug}-team")
-        except PyTransifexException as error:
-            logger.debug(error)
-        """
-
-    def test_creation(self):
-        """
-        Translation initialized from setUp, so we 'fake' a new test
-        by tearing it down
-        """
-        self.t = Translation(self.parameters, tx_api_token=self.tx_api_token)
-        self.t.tx_client.delete_project()
-        self.assertFalse(self.t.tx_client.project_exists(self.parameters.project_slug))
-        self.t = Translation(self.parameters, tx_api_token=self.tx_api_token)
-        self.assertTrue(self.t.tx_client.project_exists(self.parameters.project_slug))
-        self.assertEqual(len(self.t.tx_client.list_resources()), 1)
-
-    def test_push(self):
-        self.t.update_strings()
-        self.t.push()
-
-    def test_pull(self):
-        self.t.pull()
-        self.t.compile_strings()
+    def make_translation(self, i18n_folder: Path) -> Translation:
+        translation = Translation(self.parameters)
+        self.assertIsNone(translation.tx_client)
+        translation.ts_file = str(i18n_folder / Path(translation.ts_file).name)
+        translation.language_ts_files = lambda: [
+            str(i18n_folder / Path(f).name)
+            for f in Translation.language_ts_files(translation)
+        ]
+        return translation
 
     def test_update_strings_empty_ts_file(self):
         """An existing empty TS file, or a missing i18n folder, must not fail."""
-        parameters = Parameters.make_from(
-            path_to_config_file=Path("test/fixtures/.qgis-plugin-ci")
-        )
         with TemporaryDirectory() as tmp_dir:
             for create_empty_file in (True, False):
-                ts_file = Path(tmp_dir) / f"i18n_{create_empty_file}" / "plugin_en.ts"
+                i18n_folder = Path(tmp_dir) / f"i18n_{create_empty_file}"
+                translation = self.make_translation(i18n_folder)
+                ts_file = Path(translation.ts_file)
                 if create_empty_file:
                     ts_file.parent.mkdir()
                     ts_file.touch()
 
-                translation = Translation.__new__(Translation)
-                translation.parameters = parameters
-                translation.ts_file = str(ts_file)
                 translation.update_strings()
 
                 content = ts_file.read_text()
                 self.assertIn("<TS", content)
                 self.assertIn("some UTF-8 translation", content)
+
+    def test_update_strings_all_languages(self):
+        """The TS file of each language is created, the source one included."""
+        with TemporaryDirectory() as tmp_dir:
+            i18n_folder = Path(tmp_dir) / "i18n"
+            translation = self.make_translation(i18n_folder)
+
+            translation.update_strings(all_languages=True)
+
+            resource = self.parameters.i18n_resource_name
+            expected = {
+                f"{resource}_{lang}.ts"
+                for lang in [
+                    self.parameters.translation_source_language,
+                    *self.parameters.translation_languages,
+                ]
+            }
+            self.assertEqual(expected, {f.name for f in i18n_folder.glob("*.ts")})
+            for ts_file in i18n_folder.glob("*.ts"):
+                self.assertIn("some UTF-8 translation", ts_file.read_text())
+
+            # language attributes, from the file name, except for the source file
+            source = self.parameters.translation_source_language
+            for ts_file in i18n_folder.glob("*.ts"):
+                lang = ts_file.stem.rsplit("_", 1)[1]
+                content = ts_file.read_text()
+                if lang == source:
+                    self.assertNotIn("language=", content)
+                else:
+                    self.assertIn(
+                        f'language="{lang}" sourcelanguage="{source}"', content
+                    )
+
+    def test_set_ts_language(self):
+        """The language is read from the file name, existing attributes are kept."""
+        translation = Translation(self.parameters)
+        resource = self.parameters.i18n_resource_name
+        cases = {
+            # file name, <TS> tag before -> <TS> tag after
+            f"{resource}_fr.ts": (
+                '<TS version="2.1">',
+                '<TS version="2.1" language="fr" sourcelanguage="en">',
+            ),
+            f"{resource}_pt_BR.ts": (
+                '<TS version="2.1" language="">',
+                '<TS version="2.1" language="pt_BR" sourcelanguage="en">',
+            ),
+            f"{resource}_de.ts": (
+                '<TS version="2.1" language="de_CH" sourcelanguage="fr">',
+                '<TS version="2.1" language="de_CH" sourcelanguage="fr">',
+            ),
+            "other_file_it.ts": (
+                '<TS version="2.1">',
+                '<TS version="2.1">',
+            ),
+        }
+        with TemporaryDirectory() as tmp_dir:
+            for name, (before, after) in cases.items():
+                with self.subTest(name=name):
+                    ts_file = Path(tmp_dir) / name
+                    ts_file.write_text(
+                        f'<?xml version="1.0" encoding="utf-8"?>\n{before}\n</TS>\n'
+                    )
+                    translation.set_ts_language(ts_file)
+                    self.assertIn(after, ts_file.read_text())
 
 
 if __name__ == "__main__":

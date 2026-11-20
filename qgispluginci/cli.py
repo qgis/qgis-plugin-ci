@@ -59,6 +59,11 @@ def make_parser() -> argparse.ArgumentParser:
         help="The Transifex API token. If specified translations will be pulled and compiled.",
     )
     package_parser.add_argument(
+        "--compile-all-ts",
+        action="store_true",
+        help="Will compile all TS files into QM files, True by default if Transifex token is used.",
+    )
+    package_parser.add_argument(
         "-u",
         "--plugin-repo-url",
         help="If specified, a XML repository file will be created in the current directory, the zip URL will use this parameter.",
@@ -113,6 +118,11 @@ def make_parser() -> argparse.ArgumentParser:
     release_parser.add_argument(
         "--transifex-token",
         help="The Transifex API token. If specified translations will be pulled and compiled.",
+    )
+    release_parser.add_argument(
+        "--compile-all-ts",
+        action="store_true",
+        help="Will compile all TS files into QM files, True by default if Transifex token is used",
     )
     release_parser.add_argument(
         "--github-token",
@@ -171,6 +181,15 @@ def make_parser() -> argparse.ArgumentParser:
     )
     pull_tr_parser.add_argument("transifex_token", help="The Transifex API token")
     pull_tr_parser.add_argument(
+        "--compile", action="store_true", help="Will compile TS files into QM files"
+    )
+
+    # update-translation
+    update_tr_parser = subparsers.add_parser(
+        "update-translation",
+        help="Update TS files from the plugin sources, with pylupdate and PyQt",
+    )
+    update_tr_parser.add_argument(
         "--compile", action="store_true", help="Will compile TS files into QM files"
     )
 
@@ -240,6 +259,7 @@ def cli():
             parameters,
             release_version=args.release_version,
             tx_api_token=args.transifex_token,
+            compile_all_ts_files=args.compile_all_ts,
             allow_uncommitted_changes=args.allow_uncommitted_changes,
             plugin_repo_url=plugin_repo_url,
             plugin_repo_stylesheet=not args.no_repository_stylesheet,
@@ -255,6 +275,7 @@ def cli():
             release_tag=args.release_tag,
             tx_api_token=args.transifex_token,
             github_token=args.github_token,
+            compile_all_ts_files=args.compile_all_ts,
             upload_plugin_repo_github=args.create_plugin_repo,
             plugin_repo_stylesheet=not args.no_repository_stylesheet,
             alternative_repo_url=args.alternative_repo_url,
@@ -270,6 +291,13 @@ def cli():
     elif args.command == "pull-translation":
         t = Translation(parameters, args.transifex_token)
         t.pull()
+        if args.compile:
+            t.compile_strings()
+
+    # TRANSLATION UPDATE
+    elif args.command == "update-translation":
+        t = Translation(parameters)
+        t.update_strings(all_languages=True)
         if args.compile:
             t.compile_strings()
 
