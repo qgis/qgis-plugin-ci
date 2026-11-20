@@ -108,8 +108,12 @@ class Parameters:
     lrelease_path: str
         The path of lrelease executable
 
-    pylupdate5_path: str
-        The path of pylupdate executable
+    rcc_path: str
+        The path of rcc executable, used to compile .qrc resources files.
+        Defaults to `rcc`.
+
+    pylupdate_path: str
+        The path of pylupdate executable.
 
     timezone: str
         The timezone for the plugin creation date. Defaults to: `UTC`.
@@ -255,7 +259,9 @@ class Parameters:
         self.repository_plugin_id: str | None = definition.get("repository_plugin_id")
 
         self.lrelease_path = definition.get("lrelease_path", "lrelease")
-        self.pylupdate5_path = definition.get("pylupdate5_path", "pylupdate5")
+        self.rcc_path = definition.get("rcc_path", "rcc")
+        self.pylupdate_path = definition.get("pylupdate_path", "pylupdate6")
+
         changelog_include = definition.get("changelog_include", True)
         if isinstance(changelog_include, str):
             self.changelog_include = changelog_include.lower() in [

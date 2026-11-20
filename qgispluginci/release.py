@@ -7,6 +7,7 @@ import logging
 import os
 import re
 import shutil
+import subprocess
 import sys
 import tarfile
 import xmlrpc.client
@@ -26,6 +27,7 @@ from qgispluginci import __package_name__, __version__
 from qgispluginci.changelog import ChangelogParser
 from qgispluginci.exceptions import (
     BuiltResourceInSources,
+    CompilingResourcesFailed,
     GithubReleaseCouldNotUploadAsset,
     GithubReleaseNotFound,
     UncommitedChanges,
@@ -216,38 +218,26 @@ def create_archive(
                 tt.add(file)
 
     # compile qrc files
-    if list(Path(parameters.plugin_path).glob("*.qrc")):
-        try:
-            import pyqt5ac
-        except ImportError as exc:
-            raise ImportError(
-                "Compiling .qrc resources requires PyQt, which is optional and not installed. "
-                "Install it with: pip install 'qgis-plugin-ci[pyqt]'"
-            ) from exc
-        pyqt5ac.main(
-            ioPaths=[
-                [
-                    f"{parameters.plugin_path}/*.qrc",
-                    f"{parameters.plugin_path}/%%FILENAME%%_rc.py",
-                ]
-            ]
-        )
-        for file in glob(f"{parameters.plugin_path}/*_rc.py"):
-            with tarfile.open(top_tar_file, mode="r:") as tt:
-                for n in tt.getnames():
-                    if n == file:
-                        err_msg = (
-                            f"The file {file} is present in the sources and its name "
-                            "conflicts with a just built resource. "
-                            "You might want to remove it from the sources or "
-                            "setting export-ignore in .gitattributes config file."
-                        )
-                        logger.error(err_msg, exc_info=BuiltResourceInSources())
-                        sys.exit(1)
-            with tarfile.open(top_tar_file, mode="a") as tt:
-                logger.debug(f"\tAdding resource: {file}")
-                # https://stackoverflow.com/a/48462950/1548052
-                tt.add(file)
+    # in the plugin folder and its sub-folders, each one next to its .qrc file
+    for qrc_file in sorted(Path(parameters.plugin_path).rglob("*.qrc")):
+        output_file = qrc_file.with_name(f"{qrc_file.stem}_rc.py")
+        file = output_file.as_posix()
+        # check before compiling, so that a file in the sources is not overwritten
+        with tarfile.open(top_tar_file, mode="r:") as tt:
+            if file in tt.getnames():
+                err_msg = (
+                    f"The file {file} is present in the sources and its name "
+                    "conflicts with a just built resource. "
+                    "You might want to remove it from the sources or "
+                    "setting export-ignore in .gitattributes config file."
+                )
+                logger.error(err_msg, exc_info=BuiltResourceInSources())
+                sys.exit(1)
+        compile_qrc(qrc_file, output_file, parameters)
+        with tarfile.open(top_tar_file, mode="a") as tt:
+            logger.debug(f"\tAdding resource: {file}")
+            # https://stackoverflow.com/a/48462950/1548052
+            tt.add(file)
     # Add assets
     if asset_paths:
         with tarfile.open(top_tar_file, mode="a") as tt:
@@ -799,3 +789,35 @@ def release(
             archive=archive_name,
             server_url=alternative_repo_url,
         )
+
+
+def compile_qrc(qrc_file: Path, output_file: Path, parameters: Parameters) -> bool:
+    """Compile a .qrc resources file into a Python module, with rcc."""
+    cmd = [parameters.rcc_path, "-g", "python", "-o", str(output_file), str(qrc_file)]
+    logger.debug(f"Compiling resources: {' '.join(cmd)}")
+    try:
+        output = subprocess.run(cmd, capture_output=True, text=True)
+    except FileNotFoundError:
+        logger.error(
+            f"'{parameters.rcc_path}' executable not found. "
+            "It is provided by Qt, for instance with the package qt6-base-dev-tools, "
+            "or set 'rcc_path' in the configuration.",
+            exc_info=CompilingResourcesFailed(),
+        )
+        sys.exit(1)
+
+    if output.returncode != 0:
+        logger.error(
+            f"Compiling resources {qrc_file} failed: {output.stderr}",
+            exc_info=CompilingResourcesFailed(),
+        )
+        sys.exit(1)
+
+    content = re.sub(
+        r"^from PySide\d import QtCore$",
+        "from qgis.PyQt import QtCore",
+        output_file.read_text(),
+        flags=re.MULTILINE,
+    )
+    output_file.write_text(content)
+    return True

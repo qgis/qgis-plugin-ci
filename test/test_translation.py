@@ -4,6 +4,8 @@
 import logging
 import os
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 # 3rd party
 import yaml
@@ -67,6 +69,27 @@ class TestTranslation(unittest.TestCase):
     def test_pull(self):
         self.t.pull()
         self.t.compile_strings()
+
+    def test_update_strings_empty_ts_file(self):
+        """An existing empty TS file, or a missing i18n folder, must not fail."""
+        parameters = Parameters.make_from(
+            path_to_config_file=Path("test/fixtures/.qgis-plugin-ci")
+        )
+        with TemporaryDirectory() as tmp_dir:
+            for create_empty_file in (True, False):
+                ts_file = Path(tmp_dir) / f"i18n_{create_empty_file}" / "plugin_en.ts"
+                if create_empty_file:
+                    ts_file.parent.mkdir()
+                    ts_file.touch()
+
+                translation = Translation.__new__(Translation)
+                translation.parameters = parameters
+                translation.ts_file = str(ts_file)
+                translation.update_strings()
+
+                content = ts_file.read_text()
+                self.assertIn("<TS", content)
+                self.assertIn("some UTF-8 translation", content)
 
 
 if __name__ == "__main__":

@@ -18,9 +18,10 @@ deploy:qgis-repository:
   before_script:
     - apt update
     - apt install -y git
-# Uncomment if plugin use translations
-#     - apt install -y qt5-qmake qttools5-dev-tools
-#     - python -m pip install -U pyqt5-tools
+# Uncomment if plugin use translations, to have the lrelease command
+#     - apt install -y qt6-l10n-tools
+# Uncomment if plugin use QRC file, to have the rcc command
+#     - apt install -y qt6-base-dev-tools
     - python -m pip install -U qgis-plugin-ci
   script:
     - echo "Deploying the version ${CI_COMMIT_TAG} plugin to QGIS Plugins Repository with the user ${OSGEO_USER_NAME}"
