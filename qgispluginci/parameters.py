@@ -11,7 +11,6 @@ Parameters management.
 # standard library
 import configparser
 import logging
-import os
 import re
 import sys
 import tomllib
@@ -219,14 +218,8 @@ class Parameters:
         else:
             self.plugin_zip_directory = self.plugin_path
 
-        self.project_slug = definition.get(
-            "project_slug",
-            os.environ.get("TRAVIS_REPO_SLUG", f".../{self.plugin_slug}").split("/")[1],
-        )
-        self.github_organization_slug = definition.get(
-            "github_organization_slug",
-            os.environ.get("TRAVIS_REPO_SLUG", "").split("/")[0],
-        )
+        self.project_slug = definition.get("project_slug", self.plugin_slug)
+        self.github_organization_slug = definition.get("github_organization_slug", "")
         self.repository_url_raw: str | None = definition.get("repository_url_raw")
         self.plugin_repo_url: str | None = definition.get("repository_plugin_url")
 

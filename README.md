@@ -9,11 +9,11 @@
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/qgis/qgis-plugin-ci/main.svg)](https://results.pre-commit.ci/latest/github/qgis/qgis-plugin-ci/main)
 
 Contains scripts to perform automated testing and deployment for QGIS plugins.
-These scripts are written for and tested on GitHub, Travis-CI, github workflows and Transifex.
+These scripts are written for and tested on GitHub workflows and Transifex.
 
 - Deploy plugin releases on QGIS official plugin repository
-- Publish plugin in Github releases, option to deploy a custom repository
-- Easily integrated in Travis-CI or github workflows
+- Publish plugin in GitHub releases, option to deploy a custom repository
+- Easily integrated in GitHub workflows
 - Completely handle translations with Transifex:
     - create the project and the languages
     - pull and push translations
