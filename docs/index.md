@@ -68,8 +68,6 @@ maxdepth: 1
 ---
 usage/ci_github
 usage/ci_gitlab
-usage/ci_docker
-usage/ci_travis
 ```
 
 ```{toctree}

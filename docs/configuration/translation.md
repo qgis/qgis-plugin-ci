@@ -20,7 +20,7 @@ jobs:
       if: tag IS present
       script:
         - >
-          qgis-plugin-ci release ${TRAVIS_TAG}
+          qgis-plugin-ci release ${CI_COMMIT_TAG}
           --transifex-token ${TX_TOKEN}
           --github-token ${GH_TOKEN}
           --osgeo-username ${OSGEO_USERNAME}
