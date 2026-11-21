@@ -7,5 +7,7 @@ For instance, `my_super_transformer` for _My Super Transformer_ plugin.
 Also, [`use_project_slug_as_plugin_directory`](/_apidoc/qgispluginci.parameters) can be used to alter this behavior.
 If the source directory is not at the top level, the [`project_slug`](/_apidoc/qgispluginci.parameters)
 will automatically be used in any case.
+The archive is named after this folder, `<folder>.<version>.zip`, next to the plugin sources: the QGIS plugin
+manager installs the plugin of a custom repository in the folder its file name gives.
 
 Side note, the plugin path shouldn't contain any dash character.
